@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('ligne_budget_proposees', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('ligne_budgetaire_id')->constrained()->onDelete('cascade');
+            $table->foreignId('emetteur_id')->constrained()->onDelete('cascade');
+            $table->decimal('montant_propose', 15, 2);
+            $table->text('justification')->nullable();
+            $table->enum('statut', ['en_attente', 'approuve', 'rejete'])->default('en_attente');
             $table->timestamps();
         });
     }

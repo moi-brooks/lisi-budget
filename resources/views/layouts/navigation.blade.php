@@ -13,7 +13,21 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        {{ __('Tableau de bord') }}
+                    </x-nav-link>
+                    @if(auth()->user()->isAdmin() || auth()->user()->isGestionnaire())
+                    <x-nav-link :href="route('budgets.index')" :active="request()->routeIs('budgets.*')">
+                        {{ __('Budgets') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('emetteurs.index')" :active="request()->routeIs('emetteurs.*')">
+                        {{ __('Émetteurs') }}
+                    </x-nav-link>
+                    @endif
+                    <x-nav-link :href="route('besoins.index')" :active="request()->routeIs('besoins.*')">
+                        {{ __('Besoins') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('engagements.index')" :active="request()->routeIs('engagements.*')">
+                        {{ __('Engagements') }}
                     </x-nav-link>
                 </div>
             </div>

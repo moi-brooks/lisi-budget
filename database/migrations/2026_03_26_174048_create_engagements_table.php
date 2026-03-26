@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('engagements', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('ligne_budgetaire_id')->constrained()->onDelete('cascade');
+            $table->foreignId('emetteur_id')->constrained()->onDelete('cascade');
+            $table->decimal('montant', 15, 2);
+            $table->string('description');
+            $table->date('date_engagement');
+            $table->enum('statut', ['en_cours', 'solde', 'annule'])->default('en_cours');
             $table->timestamps();
         });
     }

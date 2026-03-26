@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('besoins', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('emetteur_id')->constrained()->onDelete('cascade');
+            $table->string('libelle');
+            $table->decimal('montant', 15, 2);
+            $table->enum('priorite', ['faible', 'moyenne', 'haute'])->default('moyenne');
+            $table->enum('statut', ['en_attente', 'approuve', 'rejete'])->default('en_attente');
             $table->timestamps();
         });
     }

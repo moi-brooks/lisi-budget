@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('ligne_budgetaires', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('budget_id')->constrained()->onDelete('cascade');
+            $table->string('code');
+            $table->string('libelle');
+            $table->decimal('montant_alloue', 15, 2)->default(0);
+            $table->enum('statut', ['ouvert', 'ferme'])->default('ouvert');
             $table->timestamps();
         });
     }

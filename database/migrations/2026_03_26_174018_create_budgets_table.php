@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
+            $table->unsignedSmallInteger('annee');
+            $table->string('titre');
+            $table->text('description')->nullable();
+            $table->enum('statut', ['brouillon', 'actif', 'clos'])->default('brouillon');
+            $table->decimal('total_previsionnel', 15, 2)->default(0);
             $table->timestamps();
         });
     }

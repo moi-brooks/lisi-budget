@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('emetteurs', function (Blueprint $table) {
             $table->id();
+            $table->string('nom');
+            $table->string('code')->unique();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
