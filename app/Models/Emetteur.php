@@ -12,9 +12,14 @@ class Emetteur extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nom',
-        'code',
         'user_id',
+        'budget_id',
+        'dotation',
+        'profession',
+    ];
+
+    protected $casts = [
+        'dotation' => 'decimal:2',
     ];
 
     public function user(): BelongsTo
@@ -22,9 +27,14 @@ class Emetteur extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function besoins(): HasMany
+    public function budget(): BelongsTo
     {
-        return $this->hasMany(Besoin::class);
+        return $this->belongsTo(Budget::class);
+    }
+
+    public function lignesProposees(): HasMany
+    {
+        return $this->hasMany(LigneBudgetProposee::class);
     }
 
     public function engagements(): HasMany
@@ -32,9 +42,24 @@ class Emetteur extends Model
         return $this->hasMany(Engagement::class);
     }
 
-    public function lignesProposees(): HasMany
+    /** Montant total proposé (toutes propositions) */
+    public function getMontantProposeAttribute(): float
     {
-        return $this->hasMany(LigneBudgetProposee::class);
+        return (float) $this->lignesProposees()->sum('montant');
+    }
+
+    /** Montant approuvé */
+    public function getMontantApprouveAttribute(): float
+    {
+        return (float) $this->lignesProposees()->where('statut', '=', 'approuve')->sum('montant');
+    }
+
+    /** Reliquat basé sur dotation - montant proposé (en attente + approuvé) */
+    public function getReliquatAttribute(): float
+    {
+        $engage = $this->lignesProposees()
+            ->whereIn('statut', ['en_attente', 'approuve'])
+            ->sum('montant');
+        return (float) $this->dotation - $engage;
     }
 }
-

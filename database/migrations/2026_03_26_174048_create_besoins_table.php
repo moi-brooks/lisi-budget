@@ -6,25 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('besoins', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('emetteur_id')->constrained()->onDelete('cascade');
-            $table->string('libelle');
-            $table->decimal('montant', 15, 2);
-            $table->enum('priorite', ['faible', 'moyenne', 'haute'])->default('moyenne');
-            $table->enum('statut', ['en_attente', 'approuve', 'rejete'])->default('en_attente');
+            $table->foreignId('engagement_id')->constrained()->onDelete('cascade');
+            $table->string('intitule');
+            $table->text('description')->nullable();
+            $table->integer('quantite')->default(1);
+            $table->decimal('prix_unitaire', 12, 2);
+            $table->decimal('montant', 12, 2)->default(0);
+            $table->boolean('is_delivered')->default(false);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('besoins');

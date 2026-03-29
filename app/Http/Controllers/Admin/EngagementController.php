@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Engagement;
+use Illuminate\Http\Request;
+
+class EngagementController extends Controller
+{
+    public function index(Request $request)
+    {
+        $status = $request->get('statut', 'en_attente');
+        
+        $engagements = Engagement::with(['emetteur.user', 'fournisseur', 'ligneProposee.ligne'])
+            ->where('statut', '=', $status)
+            ->latest()
+            ->get();
+            
+        return view('admin.engagement.index', compact('engagements', 'status'));
+    }
+
+    public function show(Engagement $engagement)
+    {
+        $engagement->load(['emetteur.user', 'fournisseur', 'besoins', 'ligneProposee.ligne']);
+        return view('admin.engagement.show', compact('engagement'));
+    }
+
+    public function approve($id)
+    {
+        $engagement = Engagement::findOrFail($id);
+        
+        if ($engagement->statut !== 'en_attente') {
+            return back()->with('error', 'Cet engagement a déjà été traité.');
+        }
+
+        $engagement->update([
+            'statut' => 'approuve',
+            'motif_refus' => null,
+        ]);
+        
+        return back()->with('success', 'Bon de commande approuvé avec succès.');
+    }
+
+    public function reject(Request $request, $id)
+    {
+        $engagement = Engagement::findOrFail($id);
+        
+        if ($engagement->statut !== 'en_attente') {
+            return back()->with('error', 'Cet engagement a déjà été traité.');
+        }
+
+        $validated = $request->validate([
+            'motif_refus' => 'required|string',
+        ]);
+
+        $engagement->update([
+            'statut' => 'rejete',
+            'motif_refus' => $validated['motif_refus'],
+        ]);
+        
+        return back()->with('success', 'Bon de commande rejeté.');
+    }
+}

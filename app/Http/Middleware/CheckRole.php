@@ -13,8 +13,16 @@ class CheckRole
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        if (!in_array(auth()->user()->role, $roles)) {
+            abort(403, 'Accès non autorisé.');
+        }
+
         return $next($request);
     }
 }

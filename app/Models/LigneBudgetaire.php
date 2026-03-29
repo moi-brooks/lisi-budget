@@ -13,14 +13,17 @@ class LigneBudgetaire extends Model
 
     protected $fillable = [
         'budget_id',
-        'code',
-        'libelle',
-        'montant_alloue',
-        'statut',
+        'article',
+        'paragraphe',
+        'rubrique',
+        'code_ligne',
+        'nom',
     ];
 
     protected $casts = [
-        'montant_alloue' => 'decimal:2',
+        'article'    => 'integer',
+        'paragraphe' => 'integer',
+        'rubrique'   => 'integer',
     ];
 
     public function budget(): BelongsTo
@@ -33,18 +36,9 @@ class LigneBudgetaire extends Model
         return $this->hasMany(LigneBudgetProposee::class);
     }
 
-    public function engagements(): HasMany
+    /** Code hiérarchique lisible : article.paragraphe.rubrique.code_ligne */
+    public function getCodeCompletAttribute(): string
     {
-        return $this->hasMany(Engagement::class);
-    }
-
-    public function getMontantEngageAttribute(): float
-    {
-        return (float) $this->engagements()->where('statut', '!=', 'annule')->sum('montant');
-    }
-
-    public function getMontantDisponibleAttribute(): float
-    {
-        return (float) $this->montant_alloue - $this->montant_engage;
+        return "{$this->article}.{$this->paragraphe}.{$this->rubrique}.{$this->code_ligne}";
     }
 }

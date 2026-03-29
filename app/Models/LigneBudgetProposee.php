@@ -13,13 +13,15 @@ class LigneBudgetProposee extends Model
     protected $fillable = [
         'ligne_budgetaire_id',
         'emetteur_id',
-        'montant_propose',
-        'justification',
+        'montant',
         'statut',
+        'motif_refus',
+        'validated_at',
     ];
 
     protected $casts = [
-        'montant_propose' => 'decimal:2',
+        'montant' => 'decimal:2',
+        'validated_at' => 'datetime',
     ];
 
     public function ligne(): BelongsTo

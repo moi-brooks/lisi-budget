@@ -11,19 +11,23 @@ class Besoin extends Model
     use HasFactory;
 
     protected $fillable = [
-        'emetteur_id',
-        'libelle',
+        'engagement_id',
+        'intitule',
+        'description',
+        'quantite',
+        'prix_unitaire',
         'montant',
-        'priorite',
-        'statut',
+        'is_delivered',
     ];
 
     protected $casts = [
-        'montant' => 'decimal:2',
+        'prix_unitaire' => 'decimal:2',
+        'montant'       => 'decimal:2',
+        'is_delivered'  => 'boolean',
     ];
 
-    public function emetteur(): BelongsTo
+    public function engagement(): BelongsTo
     {
-        return $this->belongsTo(Emetteur::class);
+        return $this->belongsTo(Engagement::class);
     }
 }

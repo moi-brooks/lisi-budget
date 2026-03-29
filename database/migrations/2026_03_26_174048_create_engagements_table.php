@@ -6,26 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('engagements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ligne_budgetaire_id')->constrained()->onDelete('cascade');
+            $table->foreignId('ligne_proposee_id')->constrained('ligne_budget_proposees')->onDelete('cascade');
             $table->foreignId('emetteur_id')->constrained()->onDelete('cascade');
-            $table->decimal('montant', 15, 2);
-            $table->string('description');
-            $table->date('date_engagement');
-            $table->enum('statut', ['en_cours', 'solde', 'annule'])->default('en_cours');
+            $table->foreignId('fournisseur_id')->nullable()->constrained()->onDelete('set null');
+            $table->date('date');
+            $table->text('commentaire')->nullable();
+            $table->decimal('tva', 8, 2)->default(0);
+            $table->decimal('total_ht', 12, 2)->default(0);
+            $table->decimal('total_ttc', 12, 2)->default(0);
+            $table->enum('statut', ['en_attente', 'approuve', 'rejete'])->default('en_attente');
+            $table->text('motif_refus')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('engagements');

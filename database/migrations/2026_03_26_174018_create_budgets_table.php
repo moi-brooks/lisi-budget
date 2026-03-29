@@ -6,25 +6,20 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
             $table->unsignedSmallInteger('annee');
-            $table->string('titre');
-            $table->text('description')->nullable();
-            $table->enum('statut', ['brouillon', 'actif', 'clos'])->default('brouillon');
-            $table->decimal('total_previsionnel', 15, 2)->default(0);
+            $table->string('saison', 20);           // e.g. "2024-2025"
+            $table->decimal('total', 12, 2);         // total alloué au labo (DH)
+            $table->foreignId('administrateur_id')
+                  ->constrained('users')
+                  ->onDelete('restrict');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('budgets');
