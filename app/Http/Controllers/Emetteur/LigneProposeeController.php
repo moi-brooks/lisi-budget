@@ -46,6 +46,15 @@ class LigneProposeeController extends Controller
             'montant' => 'required|numeric|min:0.01',
         ]);
 
+        $exists = $emetteur->lignesProposees()
+            ->where('ligne_budgetaire_id', $validated['ligne_budgetaire_id'])
+            ->whereIn('statut', ['en_attente', 'approuve'])
+            ->exists();
+
+        if ($exists) {
+            return back()->withInput()->withErrors(['ligne_budgetaire_id' => 'Une proposition pour cette ligne est déjà en attente ou approuvée.']);
+        }
+
         // Check reliquat
         if ($validated['montant'] > $emetteur->reliquat) {
             return back()->withInput()->withErrors(['montant' => 'Le montant dépasse votre reliquat disponible.']);

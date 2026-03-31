@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/engagements/{id}', [AdminEngagementController::class, 'show'])->name('engagements.show');
         Route::post('/engagements/{id}/approve', [AdminEngagementController::class, 'approve'])->name('engagements.approve');
         Route::post('/engagements/{id}/reject', [AdminEngagementController::class, 'reject'])->name('engagements.reject');
+        Route::post('/engagements/{id}/tva', [AdminEngagementController::class, 'setTva'])->name('engagements.tva');
     });
 
     // Emetteur Routes

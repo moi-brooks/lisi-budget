@@ -16,11 +16,13 @@ class LigneBudgetProposee extends Model
         'montant',
         'statut',
         'motif_refus',
+        'nb_refus',
         'validated_at',
     ];
 
     protected $casts = [
         'montant' => 'decimal:2',
+        'nb_refus' => 'integer',
         'validated_at' => 'datetime',
     ];
 

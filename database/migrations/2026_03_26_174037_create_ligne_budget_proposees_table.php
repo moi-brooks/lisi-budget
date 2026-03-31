@@ -15,6 +15,7 @@ return new class extends Migration
             $table->decimal('montant', 12, 2);
             $table->enum('statut', ['en_attente', 'approuve', 'rejete'])->default('en_attente');
             $table->text('motif_refus')->nullable();
+            $table->integer('nb_refus')->default(0);
             $table->timestamp('validated_at')->nullable();
             $table->timestamps();
         });

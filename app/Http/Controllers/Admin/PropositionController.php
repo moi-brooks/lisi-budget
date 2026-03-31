@@ -53,7 +53,7 @@ class PropositionController extends Controller
         }
 
         $validated = $request->validate([
-            'motif_refus' => 'required|string',
+            'motif_refus' => 'required|string|min:10',
         ]);
 
         $proposition->update([

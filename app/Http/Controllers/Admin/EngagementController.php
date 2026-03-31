@@ -61,4 +61,23 @@ class EngagementController extends Controller
         
         return back()->with('success', 'Bon de commande rejeté.');
     }
+
+    public function setTva(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'tva' => 'required|numeric|min:0'
+        ]);
+
+        $engagement = Engagement::findOrFail($id);
+        
+        if ($engagement->statut !== 'en_attente') {
+            return back()->with('error', 'Cet engagement a déjà été traité.');
+        }
+
+        $engagement->tva = $validated['tva'];
+        $engagement->calculerTotal();
+        $engagement->save();
+
+        return back()->with('success', 'TVA mise à jour avec recalcul du Total TTC.');
+    }
 }
