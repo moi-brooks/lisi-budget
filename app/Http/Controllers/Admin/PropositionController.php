@@ -61,6 +61,8 @@ class PropositionController extends Controller
             'motif_refus' => $validated['motif_refus'],
         ]);
         
+        $proposition->increment('nb_refus');
+        
         return back()->with('success', 'Proposition rejetée.');
     }
 }
