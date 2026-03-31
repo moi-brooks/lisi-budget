@@ -9,36 +9,28 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             <!-- Cards Section -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center border-l-4 border-blue-500">
-                    <div>
-                        <div class="text-gray-500 text-sm font-semibold uppercase">Budgets Actifs</div>
-                        <div class="text-3xl font-bold text-gray-800">{{ $stats['budgets_count'] }}</div>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 flex flex-col justify-center border border-slate-100">
+                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Budgets Actifs</div>
+                    <div class="text-3xl font-extrabold text-slate-900">{{ $stats['budgets_count'] }}</div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center border-l-4 border-green-500">
-                    <div>
-                        <div class="text-gray-500 text-sm font-semibold uppercase">Émetteurs</div>
-                        <div class="text-3xl font-bold text-gray-800">{{ $stats['emetteurs_count'] }}</div>
-                    </div>
+                <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 flex flex-col justify-center border border-slate-100">
+                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Émetteurs</div>
+                    <div class="text-3xl font-extrabold text-slate-900">{{ $stats['emetteurs_count'] }}</div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center border-l-4 border-yellow-500">
-                    <div>
-                        <div class="text-gray-500 text-sm font-semibold uppercase">Propositions en attente</div>
-                        <div class="text-3xl font-bold text-gray-800">{{ $stats['propositions_attente'] }}</div>
-                    </div>
+                <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 flex flex-col justify-center border border-slate-100">
+                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Propositions en attente</div>
+                    <div class="text-3xl font-extrabold text-slate-900">{{ $stats['propositions_attente'] }}</div>
                 </div>
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 flex items-center border-l-4 border-purple-500">
-                    <div>
-                        <div class="text-gray-500 text-sm font-semibold uppercase">Engagements en attente</div>
-                        <div class="text-3xl font-bold text-gray-800">{{ $stats['engagements_attente'] }}</div>
-                    </div>
+                <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 flex flex-col justify-center border border-slate-100">
+                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Engagements en attente</div>
+                    <div class="text-3xl font-extrabold text-slate-900">{{ $stats['engagements_attente'] }}</div>
                 </div>
             </div>
 
             <!-- Chart Section -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">Aperçu Global</h3>
+            <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 border border-slate-100">
+                <h3 class="text-lg font-bold text-slate-900 mb-6">Aperçu Global du Budget</h3>
                 <div class="w-full md:w-1/2 mx-auto">
                     <canvas id="budgetChart"></canvas>
                 </div>
@@ -59,8 +51,9 @@
                         labels: {!! json_encode($chartData->pluck('label')) !!},
                         datasets: [{
                             data: {!! json_encode($chartData->pluck('value')) !!},
-                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'],
-                            borderWidth: 0
+                            backgroundColor: ['#4f46e5', '#10b981', '#f43f5e', '#8b5cf6', '#0ea5e9', '#f59e0b'],
+                            borderWidth: 0,
+                            hoverOffset: 4
                         }]
                     },
                     options: {
