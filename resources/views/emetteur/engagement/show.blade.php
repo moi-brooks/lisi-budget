@@ -4,13 +4,8 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Détail Bon de Commande') }}
             </h2>
-            @if($engagement->statut === 'en_attente')
-                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold uppercase shadow-sm">En Attente</span>
-            @elseif($engagement->statut === 'approuve')
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold uppercase shadow-sm">Approuvé</span>
-            @else
-                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-bold uppercase shadow-sm">Rejeté</span>
-            @endif
+            <x-status-badge :status="$engagement->statut" class="text-sm px-3 py-1" />
+
         </div>
     </x-slot>
 
@@ -51,8 +46,8 @@
                     
                     <div>
                         <span class="text-sm text-gray-500 block">Imputé sur la ligne</span>
-                        <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">{{ $engagement->ligneProposee->ligne->code_complet }}</span>
-                        <span class="text-sm ml-2 font-semibold">{{ $engagement->ligneProposee->ligne->nom }}</span>
+                        <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">{{ $engagement->ligneProposee?->ligne?->code_complet ?? 'N/A' }}</span>
+                        <span class="text-sm ml-2 font-semibold">{{ $engagement->ligneProposee?->ligne?->nom ?? 'N/A' }}</span>
                     </div>
                 </div>
                 
@@ -97,43 +92,86 @@
                                 <td class="p-3 text-right">{{ number_format($besoin->prix_unitaire, 2, ',', ' ') }}</td>
                                 <td class="p-3 text-right font-bold">{{ number_format($besoin->montant, 2, ',', ' ') }}</td>
                                 <td class="p-3 text-center border-l">
+                                <td class="p-3 text-center border-l transition duration-300" id="besoin-status-{{ $besoin->id }}">
                                     @if($engagement->statut === 'approuve')
-                                        <form action="{{ route('emetteur.besoins.livraison', $besoin->id) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <!-- Toggle Checkbox Logic -->
-                                            <input type="hidden" name="is_delivered" value="{{ $besoin->is_delivered ? '0' : '1' }}">
-                                            @if($besoin->is_delivered)
-                                                <button type="submit" class="text-green-600 hover:text-green-800 focus:outline-none" title="Marquer comme non livré">
-                                                    <svg class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                </button>
-                                            @else
-                                                <button type="submit" class="text-gray-400 hover:text-green-600 focus:outline-none" title="Marquer comme livré">
-                                                    <svg class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                </button>
-                                            @endif
-                                        </form>
+                                        <div class="flex items-center justify-center">
+                                            <input 
+                                                type="checkbox" 
+                                                class="h-5 w-5 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500 livraison-check cursor-pointer transition-all hover:scale-110" 
+                                                data-id="{{ $besoin->id }}" 
+                                                data-url="{{ route('emetteur.besoins.livraison', $besoin->id) }}"
+                                                {{ $besoin->is_delivered ? 'checked' : '' }}
+                                            >
+                                        </div>
                                     @else
                                         @if($besoin->is_delivered)
-                                            <span class="text-green-600 text-xs font-bold uppercase">Livré</span>
+                                            <span class="text-green-600 text-[10px] font-black uppercase tracking-widest bg-green-50 px-2 py-1 rounded">Livré</span>
                                         @else
-                                            <span class="text-gray-400 text-xs font-bold uppercase">En attente</span>
+                                            <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest bg-gray-50 px-2 py-1 rounded">En attente</span>
                                         @endif
                                     @endif
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="p-3 text-center text-gray-500">Aucun article dans ce bon de commande.</td>
+                                <td colspan="5" class="p-4 text-center text-gray-500 italic">Aucun article dans ce bon de commande.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
+            @push('scripts')
+            <script>
+                document.querySelectorAll('.livraison-check').forEach(checkbox => {
+                    checkbox.addEventListener('change', async function() {
+                        const id = this.dataset.id;
+                        const url = this.dataset.url;
+                        const isChecked = this.checked;
+                        const row = this.closest('tr');
+                        const statusCell = document.getElementById(`besoin-status-${id}`);
+
+                        // Visual feedback (loading)
+                        statusCell.style.opacity = '0.5';
+                        checkbox.disabled = true;
+
+                        try {
+                            const response = await fetch(url, {
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({ is_delivered: isChecked ? 1 : 0 })
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                // Update row style
+                                if (data.is_delivered) {
+                                    row.classList.add('bg-green-50');
+                                } else {
+                                    row.classList.remove('bg-green-50');
+                                }
+                            } else {
+                                alert(data.message || 'Erreur lors de la mise à jour.');
+                                this.checked = !isChecked; // Revert
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Une erreur réseau est survenue.');
+                            this.checked = !isChecked; // Revert
+                        } finally {
+                            statusCell.style.opacity = '1';
+                            checkbox.disabled = false;
+                        }
+                    });
+                });
+            </script>
+            @endpush
+
 
             <!-- Add Article Form -->
             @if($engagement->statut === 'en_attente')

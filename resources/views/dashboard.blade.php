@@ -54,12 +54,10 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-3"><a href="{{ route('budgets.show', $budget) }}" class="text-indigo-600 hover:underline">{{ $budget->titre }}</a></td>
                             <td class="px-6 py-3">{{ $budget->annee }}</td>
-                            <td class="px-6 py-3">
-                                <span class="px-2 py-1 rounded-full text-xs
-                                    {{ $budget->statut === 'actif' ? 'bg-green-100 text-green-700' : ($budget->statut === 'clos' ? 'bg-gray-200 text-gray-600' : 'bg-yellow-100 text-yellow-700') }}">
-                                    {{ ucfirst($budget->statut) }}
-                                </span>
+                            <td class="px-6 py-3 text-center">
+                                <x-status-badge :status="$budget->statut" />
                             </td>
+
                             <td class="px-6 py-3 text-right">{{ number_format($budget->total_previsionnel, 0, ',', ' ') }}</td>
                         </tr>
                         @empty

@@ -8,6 +8,7 @@ use App\Models\Emetteur;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -28,27 +29,37 @@ class EmetteurController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'budget_id' => 'required|exists:budgets,id',
-            'dotation' => 'required|numeric|min:0',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|email',
+            'budget_id'  => 'required|exists:budgets,id',
+            'dotation'   => 'required|numeric|min:0',
             'profession' => 'nullable|string',
         ]);
 
-        // Create the user account first
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make(Str::random(12)), // Give random password for now
-            'role' => 'emetteur',
-        ]);
+        DB::transaction(function () use ($validated) {
+            $existingUser = User::where('email', $validated['email'])->first();
 
-        Emetteur::create([
-            'user_id' => $user->id,
-            'budget_id' => $validated['budget_id'],
-            'dotation' => $validated['dotation'],
-            'profession' => $validated['profession'],
-        ]);
+            if ($existingUser) {
+                if ($existingUser->role !== 'emetteur') {
+                    abort(422, 'Cet email est déjà utilisé par un compte non-émetteur.');
+                }
+                $user = $existingUser;
+            } else {
+                $user = User::create([
+                    'name'     => $validated['name'],
+                    'email'    => $validated['email'],
+                    'password' => Hash::make(Str::random(12)),
+                    'role'     => 'emetteur',
+                ]);
+            }
+
+            Emetteur::create([
+                'user_id'    => $user->id,
+                'budget_id'  => $validated['budget_id'],
+                'dotation'   => $validated['dotation'],
+                'profession' => $validated['profession'],
+            ]);
+        });
 
         return redirect()->route('admin.emetteurs.index')->with('success', 'Emetteur créé.');
     }

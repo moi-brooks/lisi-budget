@@ -20,6 +20,16 @@ class DashboardController extends Controller
             'engagements_attente' => Engagement::where('statut', 'en_attente')->count(),
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        // Données dynamiques pour le graphique (Engagements approuvés par émetteur)
+        $chartData = Emetteur::with(['user'])
+            ->withSum(['engagements' => fn($q) => $q->where('statut', 'approuve')], 'total_ttc')
+            ->get()
+            ->map(fn($e) => [
+                'label' => $e->user->name,
+                'value' => (float) ($e->engagements_sum_total_ttc ?? 0)
+            ]);
+
+        return view('admin.dashboard', compact('stats', 'chartData'));
+
     }
 }

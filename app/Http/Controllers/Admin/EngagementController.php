@@ -20,9 +20,11 @@ class EngagementController extends Controller
         return view('admin.engagement.index', compact('engagements', 'status'));
     }
 
-    public function show(Engagement $engagement)
+    public function show($id)
     {
-        $engagement->load(['emetteur.user', 'fournisseur', 'besoins', 'ligneProposee.ligne']);
+        $engagement = Engagement::with(['emetteur.user', 'besoins', 'ligneProposee.ligne', 'fournisseur'])
+            ->findOrFail($id);
+
         return view('admin.engagement.show', compact('engagement'));
     }
 

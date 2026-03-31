@@ -56,20 +56,31 @@
                 new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Budget Non Alloué', 'Budget Alloué aux Émetteurs'],
+                        labels: {!! json_encode($chartData->pluck('label')) !!},
                         datasets: [{
-                            data: [35, 65], // Static for now, wire to real data if required
-                            backgroundColor: ['#e5e7eb', '#3b82f6'],
+                            data: {!! json_encode($chartData->pluck('value')) !!},
+                            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'],
                             borderWidth: 0
                         }]
                     },
                     options: {
                         responsive: true,
                         plugins: {
-                            legend: { position: 'bottom' }
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) label += ': ';
+                                        label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'MAD' }).format(context.raw);
+                                        return label;
+                                    }
+                                }
+                            }
                         }
                     }
                 });
+
             }
         });
     </script>

@@ -69,26 +69,12 @@
                                                 @csrf
                                                 <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white text-xs font-bold py-1 px-2 rounded">Approuver</button>
                                             </form>
-                                            <button onclick="document.getElementById('reject-modal-{{ $prop->id }}').classList.remove('hidden')" class="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded">Rejeter</button>
+                                            <button @click="$dispatch('open-modal-reject', { id: '{{ $prop->id }}' })" class="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded">Rejeter</button>
                                         </div>
 
-                                        <!-- Reject Modal -->
-                                        <div id="reject-modal-{{ $prop->id }}" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                                            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white text-left">
-                                                <div class="mt-3">
-                                                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-2">Motif du rejet</h3>
-                                                    <form action="{{ route('admin.propositions.reject', $prop->id) }}" method="POST">
-                                                        @csrf
-                                                        <textarea name="motif_refus" required class="w-full border rounded p-2 text-sm" rows="4" placeholder="Expliquez pourquoi cette proposition est refusée..."></textarea>
-                                                        <div class="mt-4 flex justify-end">
-                                                            <button type="button" onclick="document.getElementById('reject-modal-{{ $prop->id }}').classList.add('hidden')" class="mr-2 px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Annuler</button>
-                                                            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirmer le rejet</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <x-modal-reject :id="$prop->id" :route="route('admin.propositions.reject', $prop->id)" title="Rejeter la proposition" />
                                     </td>
+
                                 @elseif($status === 'rejete')
                                     <td class="p-4 text-red-600 italic">{{ $prop->motif_refus }}</td>
                                 @endif

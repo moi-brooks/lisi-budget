@@ -33,11 +33,11 @@
                     <h3 class="text-lg font-bold mb-4 border-b pb-2">Informations Générales</h3>
 
                     <div class="mb-4">
-                        <label for="ligne_budget_proposee_id" class="block text-gray-700 text-sm font-bold mb-2">Imputer sur la ligne :</label>
-                        <select name="ligne_budget_proposee_id" id="ligne_budget_proposee_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+                        <label for="ligne_proposee_id" class="block text-gray-700 text-sm font-bold mb-2">Imputer sur la ligne :</label>
+                        <select name="ligne_proposee_id" id="ligne_proposee_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                             <option value="">-- Sélectionner une ligne approuvée --</option>
                             @foreach($lignesApprouvees as $ligne_prop)
-                                <option value="{{ $ligne_prop->id }}" {{ old('ligne_budget_proposee_id', request('ligne_id')) == $ligne_prop->id ? 'selected' : '' }}>
+                                <option value="{{ $ligne_prop->id }}" {{ old('ligne_proposee_id', request('ligne_id')) == $ligne_prop->id ? 'selected' : '' }}>
                                     {{ $ligne_prop->ligne->code_complet }} - {{ $ligne_prop->ligne->nom }} (Dispo: {{ number_format($ligne_prop->montant, 2) }} DH)
                                 </option>
                             @endforeach
@@ -74,35 +74,44 @@
                     </div>
 
                     <h3 class="text-lg font-bold mb-4 border-b pb-2">Articles (Besoins)</h3>
-                    <p class="text-xs text-gray-500 mb-4">Vous pourrez ajouter d'autres articles ou modifier les statuts de livraison plus tard, mais il faut saisir au moins un article initialement.</p>
-
-                    <div id="articles-container">
-                        <div class="flex space-x-2 mb-2 article-row">
+                    <p class="text-xs text-gray-500 mb-4">Vous pourrez ajouter d'autres articles ou modifier les statuts de livraison plus tard, mais il faut saisir au moins un article initialemen                    <div id="articles-container">
+                        <div class="flex space-x-2 mb-2 article-row border-b pb-2">
                             <div class="flex-grow">
-                                <input type="text" name="intitule[]" placeholder="Intitulé" class="shadow border rounded w-full py-2 px-3 text-sm text-gray-700" required>
+                                <label class="block text-[10px] text-gray-400 uppercase font-bold">Intitulé</label>
+                                <input type="text" name="intitule[]" placeholder="Ex: Ramettes papier" class="shadow-sm border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700" required>
                             </div>
                             <div class="flex-grow">
-                                <input type="text" name="description[]" placeholder="Description (optionnel)" class="shadow border rounded w-full py-2 px-3 text-sm text-gray-700">
+                                <label class="block text-[10px] text-gray-400 uppercase font-bold">Description</label>
+                                <input type="text" name="description[]" placeholder="Détails..." class="shadow-sm border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700">
                             </div>
                             <div class="w-24">
-                                <input type="number" name="quantite[]" placeholder="Qté" value="1" min="1" class="shadow border rounded w-full py-2 px-3 text-sm text-gray-700" required>
+                                <label class="block text-[10px] text-gray-400 uppercase font-bold">Qté</label>
+                                <input type="number" name="quantite[]" step="1" value="1" min="1" class="shadow-sm border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700 qte-input" required>
                             </div>
                             <div class="w-32">
-                                <input type="number" step="0.01" name="prix_unitaire[]" placeholder="Prix UT HT" class="shadow border rounded w-full py-2 px-3 text-sm text-gray-700" required>
+                                <label class="block text-[10px] text-gray-400 uppercase font-bold">PU HT</label>
+                                <input type="number" step="0.01" name="prix_unitaire[]" placeholder="0.00" class="shadow-sm border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700 pu-input" required>
                             </div>
-                            <div class="w-10 flex items-center justify-center">
-                                <button type="button" class="text-red-500 font-bold hover:text-red-700 hidden del-btn">&times;</button>
+                            <div class="w-8 flex items-end justify-center pb-2">
+                                <button type="button" class="text-red-500 font-bold hover:text-red-700 hidden del-btn" title="Supprimer">&times;</button>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="mb-6">
-                        <button type="button" id="add-article-btn" class="text-blue-600 text-sm font-bold hover:underline">+ Ajouter un autre article</button>
+                    <div class="flex justify-between items-center mb-10 bg-gray-50 p-4 rounded-lg border-dashed border-2 border-gray-200">
+                        <button type="button" id="add-article-btn" class="text-indigo-600 text-sm font-bold hover:underline flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Ajouter un article
+                        </button>
+                        <div class="text-right">
+                            <span class="text-gray-500 text-xs font-bold uppercase block">Estimation Total HT</span>
+                            <span id="total-ht-display" class="text-2xl font-black text-gray-900">0,00 DH</span>
+                        </div>
                     </div>
 
-                    <div class="flex items-center justify-end">
-                        <a href="{{ route('emetteur.engagements.index') }}" class="text-gray-600 hover:text-gray-900 mr-4">Annuler</a>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    <div class="flex items-center justify-end space-x-4 border-t pt-6">
+                        <a href="{{ route('emetteur.engagements.index') }}" class="text-gray-500 hover:text-gray-800 font-medium transition">Annuler</a>
+                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-200 uppercase tracking-widest text-xs">
                             Soumettre le bon de commande
                         </button>
                     </div>
@@ -112,25 +121,45 @@
             
             @push('scripts')
             <script>
+                function calculateTotalHT() {
+                    let total = 0;
+                    const rows = document.querySelectorAll('.article-row');
+                    rows.forEach(row => {
+                        const qte = parseFloat(row.querySelector('input[name="quantite[]"]').value) || 0;
+                        const pu = parseFloat(row.querySelector('input[name="prix_unitaire[]"]').value) || 0;
+                        total += qte * pu;
+                    });
+                    document.getElementById('total-ht-display').innerText = new Intl.NumberFormat('fr-FR', { 
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(total) + ' DH';
+                }
+
+                document.getElementById('articles-container').addEventListener('input', calculateTotalHT);
+
                 document.getElementById('add-article-btn').addEventListener('click', function() {
                     const container = document.getElementById('articles-container');
-                    const row = container.querySelector('.article-row').cloneNode(true);
+                    const firstRow = container.querySelector('.article-row');
+                    const row = firstRow.cloneNode(true);
                     
                     // Clear inputs in cloned row
-                    row.querySelectorAll('input[type="text"]').forEach(input => input.value = '');
+                    row.querySelectorAll('input').forEach(input => input.value = '');
                     row.querySelector('input[name="quantite[]"]').value = '1';
-                    row.querySelector('input[name="prix_unitaire[]"]').value = '';
-
                     
                     // Show delete button
                     const delBtn = row.querySelector('.del-btn');
                     delBtn.classList.remove('hidden');
                     delBtn.addEventListener('click', function() {
                         row.remove();
+                        calculateTotalHT();
                     });
                     
                     container.appendChild(row);
+                    calculateTotalHT();
                 });
+                
+                // Initial calculation
+                calculateTotalHT();
             </script>
             @endpush
 

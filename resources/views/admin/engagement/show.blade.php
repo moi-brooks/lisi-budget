@@ -17,7 +17,7 @@
             <div class="bg-white shadow-sm sm:rounded-lg mb-6 p-6 flex flex-col md:flex-row justify-between">
                 <div>
                     <h3 class="text-2xl font-bold mb-1">{{ $engagement->commentaire ?? 'Aucun commentaire' }}</h3>
-                    <p class="text-gray-600 mb-4">Émis par : <strong>{{ $engagement->emetteur->user->name }}</strong> le {{ $engagement->created_at->format('d/m/Y') }}</p>
+                    <p class="text-gray-600 mb-4">Émis par : <strong>{{ $engagement->emetteur?->user?->name ?? 'Inconnu' }}</strong> le {{ $engagement->created_at?->format('d/m/Y') ?? 'N/A' }}</p>
                     
                     <div class="mb-2">
                         <span class="text-sm text-gray-500 block">Fournisseur</span>
@@ -26,20 +26,16 @@
                     
                     <div>
                         <span class="text-sm text-gray-500 block">Imputé sur la ligne</span>
-                        <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">{{ $engagement->ligneProposee->ligne->code_complet }}</span>
-                        <span class="text-sm ml-2">{{ $engagement->ligneProposee->ligne->nom }}</span>
+                        <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded">{{ $engagement->ligneProposee?->ligne?->code_complet ?? 'N/A' }}</span>
+                        <span class="text-sm ml-2">{{ $engagement->ligneProposee?->ligne?->nom ?? 'N/A' }}</span>
                     </div>
                 </div>
                 
                 <div class="mt-4 md:mt-0 md:text-right flex flex-col justify-between">
                     <div>
                         <span class="text-sm text-gray-500 block">Statut Actuel</span>
-                        @if($engagement->statut === 'en_attente')
-                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold uppercase">En Attente</span>
-                        @elseif($engagement->statut === 'approuve')
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold uppercase">Approuvé</span>
-                        @else
-                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-bold uppercase">Rejeté</span>
+                        <x-status-badge :status="$engagement->statut" class="text-sm px-3 py-1" />
+                        @if($engagement->statut === 'rejete')
                             <p class="text-red-600 text-xs mt-2 text-left md:text-right max-w-xs">{{ $engagement->motif_refus }}</p>
                         @endif
                     </div>
@@ -102,31 +98,13 @@
                             </button>
                         </form>
                         
-                        <button onclick="document.getElementById('reject-modal').classList.remove('hidden')" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded shadow">
+                        <button @click="$dispatch('open-modal-reject', { id: '{{ $engagement->id }}' })" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded shadow">
                             Rejeter
                         </button>
                     </div>
                 </div>
 
-                <!-- Reject Modal -->
-                <div id="reject-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-                    <div class="relative top-20 mx-auto p-5 border w-[32rem] shadow-lg rounded-md bg-white text-left">
-                        <div class="mt-3">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-2">Rejeter le bon de commande</h3>
-                            <form action="{{ route('admin.engagements.reject', $engagement->id) }}" method="POST">
-                                @csrf
-                                <div class="mb-4">
-                                    <label class="block text-gray-700 text-sm font-bold mb-2">Motif du rejet (obligatoire)</label>
-                                    <textarea name="motif_refus" required class="w-full border rounded p-2 text-sm" rows="4" placeholder="Veuillez préciser pourquoi ce bon de commande ne peut être accepté en l'état..."></textarea>
-                                </div>
-                                <div class="mt-4 flex justify-end space-x-2">
-                                    <button type="button" onclick="document.getElementById('reject-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">Annuler</button>
-                                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Confirmer le rejet</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                <x-modal-reject :id="$engagement->id" :route="route('admin.engagements.reject', $engagement->id)" title="Rejeter le bon de commande" />
             @endif
 
             <div class="mt-4">

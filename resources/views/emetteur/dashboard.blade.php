@@ -13,6 +13,29 @@
                 <p class="text-gray-600">Saison budgétaire active : <strong>{{ $emetteur->budget->saison }}</strong></p>
             </div>
 
+            <!-- Budget Gauge -->
+            @php
+                $engagedTotal = $stats['montant_approuve'] + $stats['montant_attente'];
+                $percent = $stats['dotation'] > 0 ? ($engagedTotal / $stats['dotation']) * 100 : 0;
+                $percent = min($percent, 100); // Caps at 100% visually
+                $color = $percent < 70 ? 'bg-green-500' : ($percent < 90 ? 'bg-orange-500' : 'bg-red-500');
+            @endphp
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-lg font-bold text-gray-800">Utilisation du Budget (Total Engagé)</h3>
+                    <span class="text-sm font-bold {{ str_replace('bg-', 'text-', $color) }}">{{ number_format($percent, 1) }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div class="{{ $color }} h-4 rounded-full transition-all duration-1000" style="width: {{ $percent }}%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-2 italic font-semibold">
+                    <span>Dotation : {{ number_format($stats['dotation'], 2, ',', ' ') }} DH</span>
+                    <span>Déjà Engagé : {{ number_format($engagedTotal, 2, ',', ' ') }} DH</span>
+                    <span>Reliquat Réel : {{ number_format($stats['reliquat'], 2, ',', ' ') }} DH</span>
+                </div>
+            </div>
+
+
             <!-- Cards Section -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-blue-500">

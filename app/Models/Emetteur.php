@@ -54,12 +54,13 @@ class Emetteur extends Model
         return (float) $this->lignesProposees()->where('statut', '=', 'approuve')->sum('montant');
     }
 
-    /** Reliquat basé sur dotation - montant proposé (en attente + approuvé) */
+    /** Reliquat basé sur dotation - somme des engagements approuvés (TTC) */
     public function getReliquatAttribute(): float
     {
-        $engage = $this->lignesProposees()
-            ->whereIn('statut', ['en_attente', 'approuve'])
-            ->sum('montant');
+        $engage = $this->engagements()
+            ->where('statut', '=', 'approuve')
+            ->sum('total_ttc');
         return (float) $this->dotation - $engage;
     }
+
 }

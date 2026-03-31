@@ -94,8 +94,11 @@ class EngagementController extends Controller
         return redirect()->route('emetteur.engagements.show', $engagement)->with('success', 'Bon de commande créé.');
     }
 
-    public function show(Engagement $engagement)
+    public function show($engagement)
     {
+        $engagement = Engagement::with(['emetteur.user', 'ligneProposee.ligne', 'fournisseur', 'besoins'])
+            ->findOrFail($engagement);
+
         if ($engagement->emetteur_id !== auth()->user()->emetteur->id) {
             abort(403);
         }
@@ -140,7 +143,9 @@ class EngagementController extends Controller
         $besoin = Besoin::findOrFail($id);
         
         if ($besoin->engagement->emetteur_id !== auth()->user()->emetteur->id) {
-            abort(403);
+            return $request->expectsJson() 
+                ? response()->json(['success' => false, 'message' => 'Non autorisé.'], 403)
+                : abort(403);
         }
 
         $validated = $request->validate([
@@ -149,6 +154,15 @@ class EngagementController extends Controller
 
         $besoin->update(['is_delivered' => $validated['is_delivered']]);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'is_delivered' => (bool)$besoin->is_delivered,
+                'message' => 'Statut de livraison mis à jour.'
+            ]);
+        }
+
         return back()->with('success', 'Statut de livraison mis à jour.');
     }
+
 }
