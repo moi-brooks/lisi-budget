@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Engagement;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class EngagementController extends Controller
@@ -26,6 +27,19 @@ class EngagementController extends Controller
             ->findOrFail($id);
 
         return view('admin.engagement.show', compact('engagement'));
+    }
+
+    public function download($id)
+    {
+        $engagement = Engagement::with(['emetteur.user', 'fournisseur', 'besoins', 'ligneProposee.ligne'])
+            ->findOrFail($id);
+
+        $pdf = Pdf::loadView('pdf.bon_commande', compact('engagement'))
+            ->setPaper('a4', 'portrait');
+
+        $filename = 'BC-' . str_pad($engagement->id, 5, '0', STR_PAD_LEFT) . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function approve($id)

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Besoin;
 use App\Models\Engagement;
 use App\Models\Fournisseur;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class EngagementController extends Controller
@@ -104,6 +105,23 @@ class EngagementController extends Controller
         }
 
         return view('emetteur.engagement.show', compact('engagement'));
+    }
+
+    public function download($id)
+    {
+        $engagement = Engagement::with(['emetteur.user', 'fournisseur', 'besoins', 'ligneProposee.ligne'])
+            ->findOrFail($id);
+
+        if ($engagement->emetteur_id !== auth()->user()->emetteur->id) {
+            abort(403);
+        }
+
+        $pdf = Pdf::loadView('pdf.bon_commande', compact('engagement'))
+            ->setPaper('a4', 'portrait');
+
+        $filename = 'BC-' . str_pad($engagement->id, 5, '0', STR_PAD_LEFT) . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function storeBesoin(Request $request, $id)

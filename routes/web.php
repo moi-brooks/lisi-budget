@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/engagements/{id}/approve', [AdminEngagementController::class, 'approve'])->name('engagements.approve');
         Route::post('/engagements/{id}/reject', [AdminEngagementController::class, 'reject'])->name('engagements.reject');
         Route::post('/engagements/{id}/tva', [AdminEngagementController::class, 'setTva'])->name('engagements.tva');
+        Route::get('/engagements/{id}/download', [AdminEngagementController::class, 'download'])->name('engagements.download');
     });
 
     // Emetteur Routes
@@ -55,6 +56,7 @@ Route::middleware('auth')->group(function () {
         
         Route::resource('engagements', EmetteurEngagementController::class)->only(['index', 'create', 'store', 'show']);
         Route::post('/engagements/{id}/besoins', [EmetteurEngagementController::class, 'storeBesoin'])->name('engagements.besoins.store');
+        Route::get('/engagements/{id}/download', [EmetteurEngagementController::class, 'download'])->name('engagements.download');
         Route::patch('/besoins/{id}/livraison', [EmetteurEngagementController::class, 'markLivre'])->name('besoins.livraison');
     });
 });
