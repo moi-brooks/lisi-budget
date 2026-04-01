@@ -5,8 +5,9 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-blue-600" />
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
+                        <img src="/favicon.png" alt="Reliquat" class="h-7 w-7">
+                        <span class="font-bold text-slate-800 text-base tracking-tight">Reliquat</span>
                     </a>
                 </div>
 
