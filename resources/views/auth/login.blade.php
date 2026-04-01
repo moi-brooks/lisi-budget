@@ -18,18 +18,19 @@
         .btn-primary:active { transform: translateY(0) scale(0.99); }
     </style>
 </head>
-<body class="antialiased min-h-screen bg-slate-100 flex items-center justify-center p-4">
+<body class="antialiased min-h-screen bg-slate-100 flex flex-col items-center justify-center p-4 gap-6">
+
+    {{-- Branding above the card --}}
+    <div class="flex items-center gap-2.5">
+        <img src="/favicon.png" alt="Reliquat" class="h-9 w-9 rounded-xl shadow-md">
+        <span class="text-slate-800 font-bold text-xl tracking-tight">Reliquat</span>
+    </div>
 
     {{-- Modal-style card --}}
     <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl shadow-slate-900/10 overflow-hidden flex min-h-[580px]">
 
         {{-- LEFT PANEL — Navy --}}
         <div class="hidden md:flex md:w-[42%] bg-slate-900 flex-col justify-between p-10">
-            {{-- Logo --}}
-            <div>
-                <img src="/logo.png" alt="Reliquat" class="h-8 w-auto">
-            </div>
-
             {{-- Hero --}}
             <div class="space-y-4">
                 <p class="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em]">Laboratoire LISI</p>
@@ -49,11 +50,6 @@
         {{-- RIGHT PANEL — White --}}
         <div class="flex-1 flex items-center justify-center p-10">
             <div class="w-full max-w-sm">
-
-                {{-- Mobile logo --}}
-                <div class="mb-8 md:hidden">
-                    <img src="/logo.png" alt="Reliquat" class="h-8 w-auto">
-                </div>
 
                 {{-- Heading --}}
                 <div class="mb-7">
