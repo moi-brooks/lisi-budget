@@ -1,14 +1,16 @@
 @props(['status'])
 
 @php
-    $classes = match($status) {
-        'approuve', 'actif' => 'bg-green-100 text-green-800 border-green-200',
-        'en_attente', 'brouillon' => 'bg-orange-100 text-orange-800 border-orange-200',
-        'rejete', 'clos', 'annule' => 'bg-red-100 text-red-800 border-red-200',
-        default => 'bg-gray-100 text-gray-800 border-gray-200',
-    };
+    $config = [
+        'en_attente' => ['bg' => 'bg-amber-50/50', 'text' => 'text-amber-800', 'label' => 'En attente'],
+        'approuve'   => ['bg' => 'bg-emerald-50/50', 'text' => 'text-emerald-800', 'label' => 'Approuvé'],
+        'rejete'     => ['bg' => 'bg-rose-50/50', 'text' => 'text-rose-800', 'label' => 'Rejeté'],
+        'actif'      => ['bg' => 'bg-emerald-50/50', 'text' => 'text-emerald-800', 'label' => 'Actif'],
+        'termine'    => ['bg' => 'bg-slate-100/50', 'text' => 'text-slate-600', 'label' => 'Terminé'],
+    ];
+    $c = $config[$status] ?? ['bg' => 'bg-slate-50', 'text' => 'text-slate-500', 'label' => str_replace('_', ' ', $status)];
 @endphp
 
-<span {{ $attributes->merge(['class' => "px-2.5 py-0.5 rounded-full text-xs font-bold uppercase border shadow-sm $classes"]) }}>
-    {{ str_replace('_', ' ', $status) }}
+<span {{ $attributes->merge(['class' => "inline-flex items-center px-4 py-1.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.1em] italic {$c['bg']} {$c['text']} leading-none"]) }}>
+    {{ $c['label'] }}
 </span>

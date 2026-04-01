@@ -14,23 +14,21 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
-        <div class="min-h-screen bg-slate-50">
-            @include('layouts.navigation')
+    <body class="font-sans text-primary antialiased selection:bg-accent selection:text-white bg-[#F4F6FB]">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            @include('layouts.sidebar')
 
-            <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-transparent pt-6">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-slate-800">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+            <!-- Main Content Area -->
+            <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+                <!-- Top Bar -->
+                @include('layouts.topbar')
 
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+                <!-- Scrollable content -->
+                <main class="flex-1 overflow-y-auto p-6">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
 
         @stack('scripts')

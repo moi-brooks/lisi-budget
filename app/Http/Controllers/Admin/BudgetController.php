@@ -22,7 +22,7 @@ class BudgetController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'annee' => 'required|integer|min:2020:max:2099',
+            'annee' => 'required|integer|min:2020|max:2099',
             'saison' => 'required|string|max:20',
             'total' => 'required|numeric|min:0',
         ]);
@@ -46,7 +46,7 @@ class BudgetController extends Controller
     public function update(Request $request, Budget $budget)
     {
         $validated = $request->validate([
-            'annee' => 'required|integer|min:2020:max:2099',
+            'annee' => 'required|integer|min:2020|max:2099',
             'saison' => 'required|string|max:20',
             'total' => 'required|numeric|min:0',
         ]);

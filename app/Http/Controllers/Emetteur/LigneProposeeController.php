@@ -24,7 +24,9 @@ class LigneProposeeController extends Controller
             ->latest()
             ->get();
 
-        return view('emetteur.ligne.index', compact('propositions', 'status'));
+        $lignes = LigneBudgetaire::where('budget_id', $emetteur->budget_id)->get();
+
+        return view('emetteur.ligne.index', compact('propositions', 'status', 'emetteur', 'lignes'));
     }
 
     public function create()
