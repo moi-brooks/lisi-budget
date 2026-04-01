@@ -56,8 +56,12 @@
                 </table>
             </div>
 
-            <div class="mt-6">
-                <a href="{{ route('admin.budgets.index') }}" class="text-blue-600 hover:underline">&larr; Retour à la liste</a>
+            <div class="mt-6 flex items-center gap-4">
+                <a href="{{ route('admin.budgets.lignes.index', $budget) }}"
+                   class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow transition">
+                    Gérer les rubriques
+                </a>
+                <a href="{{ route('admin.budgets.index') }}" class="text-slate-500 hover:text-slate-800 text-sm font-medium transition">← Retour à la liste</a>
             </div>
         </div>
     </div>

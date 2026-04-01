@@ -29,10 +29,47 @@
             </div>
 
             <!-- Chart Section -->
-            <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 border border-slate-100">
-                <h3 class="text-lg font-bold text-slate-900 mb-6">Aperçu Global du Budget</h3>
-                <div class="w-full md:w-1/2 mx-auto">
-                    <canvas id="budgetChart"></canvas>
+            <div class="bg-white overflow-hidden shadow-sm rounded-2xl border border-slate-100">
+                <div class="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-slate-100">
+                    <!-- Left: Chart -->
+                    <div class="w-full md:w-1/2 p-8">
+                        <h3 class="text-lg font-bold text-slate-900 mb-6">Répartition Budgétaire Global</h3>
+                        <div class="w-full max-w-xs mx-auto">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Right: Summary info -->
+                    <div class="w-full md:w-1/2 p-8 flex flex-col justify-center space-y-6">
+                        <h3 class="text-lg font-bold text-slate-900">Synthèse Financière</h3>
+                        <div class="space-y-4">
+                            @php
+                                $budgetActif = \App\Models\Budget::latest()->first();
+                                $totalEngage = \App\Models\Engagement::where('statut', 'approuve')->sum('total_ttc');
+                                $totalAttente = \App\Models\Engagement::where('statut', 'en_attente')->sum('total_ttc');
+                            @endphp
+                            <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                                <span class="text-sm text-slate-500 font-medium">Budget annuel total</span>
+                                <span class="text-sm font-bold text-slate-900">{{ $budgetActif ? number_format($budgetActif->total, 0, ',', ' ') . ' DH' : '—' }}</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                                <span class="text-sm text-slate-500 font-medium">Total engagé (approuvé)</span>
+                                <span class="text-sm font-bold text-emerald-600">{{ number_format($totalEngage, 0, ',', ' ') }} DH</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                                <span class="text-sm text-slate-500 font-medium">Total en attente</span>
+                                <span class="text-sm font-bold text-amber-500">{{ number_format($totalAttente, 0, ',', ' ') }} DH</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                                <span class="text-sm text-slate-500 font-medium">Émetteurs actifs</span>
+                                <span class="text-sm font-bold text-slate-900">{{ $stats['emetteurs_count'] }}</span>
+                            </div>
+                            <div class="flex items-center justify-between py-3">
+                                <span class="text-sm text-slate-500 font-medium">Propositions en attente</span>
+                                <span class="text-sm font-bold text-indigo-600">{{ $stats['propositions_attente'] }}</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

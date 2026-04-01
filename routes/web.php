@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BudgetController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EmetteurController;
 use App\Http\Controllers\Admin\EngagementController as AdminEngagementController;
+use App\Http\Controllers\Admin\LigneBudgetaireController;
 use App\Http\Controllers\Admin\PropositionController;
 use App\Http\Controllers\Emetteur\DashboardController as EmetteurDashboardController;
 use App\Http\Controllers\Emetteur\EngagementController as EmetteurEngagementController;
@@ -32,6 +33,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         
         Route::resource('budgets', BudgetController::class);
+        Route::resource('budgets.lignes', LigneBudgetaireController::class)->except(['show']);
         Route::resource('emetteurs', EmetteurController::class);
         
         Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions.index');

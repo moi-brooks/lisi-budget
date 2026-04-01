@@ -39,7 +39,7 @@
                             <option value="">-- Sélectionner une ligne --</option>
                             @foreach($lignes as $ligne)
                                 <option value="{{ $ligne->id }}" {{ old('ligne_budgetaire_id') == $ligne->id ? 'selected' : '' }}>
-                                    {{ $ligne->code_complet }} - {{ $ligne->nom }}
+                                    {{ $ligne->nom }}
                                 </option>
                             @endforeach
                         </select>
