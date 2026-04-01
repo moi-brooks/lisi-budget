@@ -22,8 +22,9 @@
     <body class="font-sans text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-slate-50">
             <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                <a href="/" class="flex flex-col items-center space-y-2">
+                    <img src="/favicon.png" alt="LISI Budget" class="h-16 w-16 rounded-2xl shadow-lg">
+                    <span class="font-bold text-xl text-slate-800 tracking-tight">LISI <span class="text-blue-600">Budget</span></span>
                 </a>
             </div>
 
