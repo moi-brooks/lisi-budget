@@ -13,127 +13,37 @@ class LigneBudgetaireSeeder extends Seeder
      */
     public function run(): void
     {
-        // On a besoin d'un budget par défaut pour y rattacher les lignes
-        $budget = Budget::firstOrCreate(
-            ['annee' => date('Y')],
-            [
-                'saison' => date('Y') . '-' . (date('Y') + 1),
-                'total' => 1000000.00,
-                'administrateur_id' => 1, // On suppose que l'admin (ID 1) existe déjà
-            ]
-        );
+        $budget = Budget::first() ?: Budget::create([
+            'annee' => date('Y'),
+            'saison' => date('Y') . '-' . (date('Y') + 1),
+            'total' => 2500000.00,
+            'administrateur_id' => 1,
+        ]);
 
         $lignes = [
-            // 2.220.22030 (Déplacements au Maroc)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 220,
-                'rubrique' => 22030,
-                'code_ligne' => '22031',
-                'nom' => 'Frais de déplacement au Maroc',
-            ],
-            // 2.220.22030 (Déplacements ou missions à l'étranger)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 220,
-                'rubrique' => 22030,
-                'code_ligne' => '22033',
-                'nom' => 'Frais de déplacement ou missions à l\'étranger',
-            ],
-            // 2.230.23020 (Expositions, visites et foires)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 230,
-                'rubrique' => 23020,
-                'code_ligne' => '23021',
-                'nom' => 'Organisation de fêtes, réceptions et foires',
-            ],
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 230,
-                'rubrique' => 23020,
-                'code_ligne' => '23022',
-                'nom' => 'Sponsoring et autres dépenses publicitaires',
-            ],
-            // 2.230.23050 (Achat de matériel informatique)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 230,
-                'rubrique' => 23050,
-                'code_ligne' => '23054',
-                'nom' => 'Achat, acquisition et location du matériel technique et informatique',
-            ],
-            // 2.230.23060 (Entretien et réparation du matériel informatique)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 230,
-                'rubrique' => 23060,
-                'code_ligne' => '23062',
-                'nom' => 'Entretien et réparation du matériel informatique ou scientifique',
-            ],
-            // 2.230.23070 (Achat de consommables)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 230,
-                'rubrique' => 23070,
-                'code_ligne' => '23073',
-                'nom' => 'Achat et fournitures informatiques ou électroniques',
-            ],
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 230,
-                'rubrique' => 23070,
-                'code_ligne' => '23074',
-                'nom' => 'Toner, encre et petit matériel informatique',
-            ],
-            // 2.240.24010 (Dépôt et publication)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 240,
-                'rubrique' => 24010,
-                'code_ligne' => '24011',
-                'nom' => 'Frais de publication',
-            ],
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 240,
-                'rubrique' => 24010,
-                'code_ligne' => '24012',
-                'nom' => 'Frais de reliures, d\'impression et de reprographie',
-            ],
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 240,
-                'rubrique' => 24010,
-                'code_ligne' => '24013',
-                'nom' => 'Frais d\'inscription aux congrès et colloques',
-            ],
-            // 2.240.24070 (Livres et abonnements)
-            [
-                'budget_id' => $budget->id,
-                'article' => 2,
-                'paragraphe' => 240,
-                'rubrique' => 24070,
-                'code_ligne' => '24074',
-                'nom' => 'Achat d\'ouvrages, abonnements, bibliothèques',
-            ],
+            ['rubrique' => 38, 'nom' => "Frais de participation et d'inscription aux colloques", 'code_ligne' => '38-01'],
+            ['rubrique' => 32, 'nom' => "Achats de petit outillage et petit équipement", 'code_ligne' => '32-01'],
+            ['rubrique' => 12, 'nom' => "Achat de fournitures informatiques", 'code_ligne' => '12-01'],
+            ['rubrique' => 11, 'nom' => "Achat de fournitures de bureau, papeterie et imprimés", 'code_ligne' => '11-01'],
+            ['rubrique' => 32, 'nom' => "Achat de matières premières", 'code_ligne' => '32-02'],
+            ['rubrique' => 23, 'nom' => "Frais de transport du personnel et des étudiants à l'étranger", 'code_ligne' => '23-01'],
+            ['rubrique' => 21, 'nom' => "Indemnités de déplacement à l'intérieur du Royaume", 'code_ligne' => '21-01'],
+            ['rubrique' => 22, 'nom' => "Indemnités kilométriques", 'code_ligne' => '22-01'],
+            ['rubrique' => 25, 'nom' => "Indemnités de mission à l'étranger", 'code_ligne' => '25-01'],
+            ['rubrique' => 20, 'nom' => "Achat de carburants", 'code_ligne' => '20-01'],
+            ['rubrique' => 13, 'nom' => "Achat de matériel scientifique", 'code_ligne' => '13-01'],
+            ['rubrique' => 14, 'nom' => "Achat de matériel informatique", 'code_ligne' => '14-01'],
         ];
 
-        foreach ($lignes as $ligne) {
-            LigneBudgetaire::firstOrCreate(
-                ['budget_id' => $ligne['budget_id'], 'code_ligne' => $ligne['code_ligne']],
-                $ligne
+        foreach ($lignes as $data) {
+            LigneBudgetaire::updateOrCreate(
+                ['budget_id' => $budget->id, 'nom' => $data['nom']],
+                [
+                    'article' => 2, // Standard article
+                    'paragraphe' => 200, // Standard paragraphe
+                    'rubrique' => $data['rubrique'],
+                    'code_ligne' => $data['code_ligne'],
+                ]
             );
         }
     }
