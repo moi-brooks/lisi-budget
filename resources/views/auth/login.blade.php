@@ -5,59 +5,80 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Connexion — Reliquat</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/icon.svg">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .input-field { transition: all 0.15s ease; }
-        .input-field:focus { outline: none; border-color: #4f46e5; background: #fff; box-shadow: 0 0 0 3px rgba(79,70,229,0.08); }
-        .btn-primary { transition: all 0.2s ease; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(79,70,229,0.28); }
-        .btn-primary:active { transform: translateY(0) scale(0.99); }
+        .input-field { transition: border-color 0.15s, box-shadow 0.15s, background 0.15s; }
+        .input-field:focus { outline: none; border-color: #6366f1; background: #fff; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+        .btn-submit { transition: transform 0.15s, box-shadow 0.15s; }
+        .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(99,102,241,0.35); }
+        .btn-submit:active { transform: translateY(0) scale(0.99); }
+        .fssm-watermark { filter: invert(1) brightness(2); opacity: 0.06; pointer-events: none; }
     </style>
 </head>
-<body class="antialiased min-h-screen bg-slate-100 flex flex-col items-center justify-center p-4 gap-6">
+<body class="antialiased min-h-screen bg-[#f1f5f9] flex flex-col items-center justify-center px-4 py-8 gap-5">
 
-    {{-- Branding above the card --}}
-    <div class="flex items-center gap-2.5">
-        <img src="/favicon.png" alt="Reliquat" class="h-9 w-9">
-        <span class="text-slate-800 font-bold text-xl tracking-tight">Reliquat</span>
-    </div>
+    {{-- Branding above card --}}
+    <a href="/" class="flex items-center gap-2.5 group">
+        <svg class="h-7 w-7 text-slate-800 group-hover:text-indigo-600 transition-colors" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="3.5" height="28" rx="1" fill="currentColor"/>
+            <rect x="6" y="6" width="18" height="3.5" rx="1" fill="currentColor"/>
+            <rect x="20.5" y="6" width="3.5" height="3.5" rx="1" fill="currentColor"/>
+            <rect x="21.5" y="8" width="3.5" height="10" rx="1" fill="currentColor"/>
+            <rect x="6" y="18" width="17" height="3.5" rx="1" fill="currentColor"/>
+            <rect x="20" y="16" width="3.5" height="5.5" rx="1" fill="currentColor"/>
+            <rect x="13" y="28" width="3.5" height="6" rx="1" fill="currentColor"/>
+            <rect x="19" y="24" width="3.5" height="10" rx="1" fill="currentColor"/>
+            <rect x="25" y="20" width="3.5" height="14" rx="1" fill="currentColor"/>
+        </svg>
+        <span class="font-bold text-slate-800 text-lg tracking-tight group-hover:text-indigo-600 transition-colors">Reliquat</span>
+    </a>
 
-    {{-- Modal-style card --}}
-    <div class="w-full max-w-4xl bg-white rounded-3xl shadow-2xl shadow-slate-900/10 overflow-hidden flex min-h-[580px]">
+    {{-- Modal card --}}
+    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl shadow-slate-900/8 overflow-hidden flex" style="min-height: 520px;">
 
-        {{-- LEFT PANEL — Navy --}}
-        <div class="hidden md:flex md:w-[42%] bg-slate-900 flex-col justify-between p-10">
-            {{-- Hero --}}
-            <div class="space-y-4">
-                <p class="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em]">Laboratoire d'Informatique et des Systèmes d'Intelligence</p>
-                <h1 class="text-white text-3xl font-bold leading-snug tracking-tight">
-                    Bienvenue.<br>
-                    <span class="text-slate-400 font-normal text-2xl">Gérez votre<br>budget de recherche.</span>
+        {{-- LEFT — Navy panel --}}
+        <div class="hidden md:flex md:w-[42%] relative flex-col justify-between p-10 overflow-hidden" style="background: #0f172a;">
+
+            {{-- FSSM logo watermark in background --}}
+            <div class="absolute inset-0 flex items-center justify-center">
+                <img src="/logo_fssm_transparent.png" alt="" class="fssm-watermark w-4/5 max-w-xs select-none">
+            </div>
+
+            {{-- Content above watermark --}}
+            <div class="relative z-10 space-y-1">
+                <p class="text-indigo-400 text-[10px] font-bold uppercase tracking-[0.2em]">Laboratoire d'Informatique<br>et des Systèmes d'Intelligence</p>
+            </div>
+
+            <div class="relative z-10 space-y-3">
+                <h1 class="text-white text-3xl font-bold leading-tight tracking-tight">
+                    Bienvenue.
                 </h1>
-                <p class="text-slate-500 text-xs leading-relaxed">
-                    Système de gestion budgétaire pour les laboratoires de recherche universitaire.
+                <p class="text-slate-400 text-base font-normal leading-snug">
+                    Gérez votre budget<br>de recherche.
+                </p>
+                <p class="text-slate-600 text-xs leading-relaxed max-w-[220px] pt-1">
+                    Système de gestion budgétaire pour les laboratoires de l'Université Cadi Ayyad.
                 </p>
             </div>
 
-            {{-- Footer --}}
-            <p class="text-slate-600 text-xs">© {{ date('Y') }} LISI — Université Cadi Ayyad</p>
+            <div class="relative z-10">
+                <img src="/logo_fssm_transparent.png" alt="Faculté des Sciences Semlalia" class="h-8 w-auto opacity-40 brightness-0 invert">
+            </div>
         </div>
 
-        {{-- RIGHT PANEL — White --}}
-        <div class="flex-1 flex items-center justify-center p-10">
-            <div class="w-full max-w-sm">
+        {{-- RIGHT — Form --}}
+        <div class="flex-1 flex items-center justify-center px-10 py-12">
+            <div class="w-full max-w-xs">
 
-                {{-- Heading --}}
-                <div class="mb-7">
-                    <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Connexion</h2>
+                <div class="mb-8">
+                    <h2 class="text-xl font-bold text-slate-900 tracking-tight">Connexion</h2>
                     <p class="text-slate-400 text-sm mt-1">Accédez à votre espace de gestion.</p>
                 </div>
 
-                {{-- Session Status --}}
                 <x-auth-session-status class="mb-4" :status="session('status')" />
 
                 <form method="POST" action="{{ route('login') }}" class="space-y-4">
@@ -71,7 +92,7 @@
                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             </span>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                                class="input-field w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-300"
+                                class="input-field w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-300"
                                 placeholder="exemple@uca.ac.ma">
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="text-xs" />
@@ -82,7 +103,7 @@
                         <div class="flex items-center justify-between">
                             <label for="password" class="block text-[11px] font-semibold text-slate-400 uppercase tracking-widest">Mot de passe</label>
                             @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="text-[11px] text-indigo-500 hover:text-indigo-700 font-semibold transition">Oublié ?</a>
+                                <a href="{{ route('password.request') }}" class="text-[11px] text-indigo-500 hover:text-indigo-700 font-semibold transition-colors">Oublié ?</a>
                             @endif
                         </div>
                         <div class="relative">
@@ -90,7 +111,7 @@
                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                             </span>
                             <input id="password" type="password" name="password" required autocomplete="current-password"
-                                class="input-field w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-300"
+                                class="input-field w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-300"
                                 placeholder="••••••••">
                         </div>
                         <x-input-error :messages="$errors->get('password')" class="text-xs" />
@@ -100,20 +121,23 @@
                     <div class="flex items-center">
                         <input id="remember_me" type="checkbox" name="remember"
                             class="w-4 h-4 rounded border-slate-200 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer">
-                        <label for="remember_me" class="ml-2.5 text-xs font-medium text-slate-400 cursor-pointer">Rester connecté</label>
+                        <label for="remember_me" class="ml-2.5 text-xs text-slate-400 cursor-pointer">Rester connecté</label>
                     </div>
 
                     {{-- Submit --}}
-                    <div class="pt-2">
+                    <div class="pt-1">
                         <button type="submit"
-                            class="btn-primary w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-semibold py-3.5 rounded-xl text-sm">
+                            class="btn-submit w-full flex items-center justify-center gap-2 text-white font-semibold py-3 rounded-xl text-sm"
+                            style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
                             Se connecter
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                         </button>
                     </div>
                 </form>
 
-                <p class="mt-8 text-center text-xs text-slate-300">© {{ date('Y') }} Reliquat — Laboratoire LISI</p>
+                <p class="mt-8 text-center text-[11px] text-slate-300">
+                    © {{ date('Y') }} LISI — Université Cadi Ayyad
+                </p>
             </div>
         </div>
 
