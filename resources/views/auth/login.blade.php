@@ -33,7 +33,7 @@
         <div class="hidden md:flex md:w-[42%] bg-slate-900 flex-col justify-between p-10">
             {{-- Hero --}}
             <div class="space-y-4">
-                <p class="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em]">Laboratoire LISI</p>
+                <p class="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em]">Laboratoire d'Informatique et des Systèmes d'Intelligence</p>
                 <h1 class="text-white text-3xl font-bold leading-snug tracking-tight">
                     Bienvenue.<br>
                     <span class="text-slate-400 font-normal text-2xl">Gérez votre<br>budget de recherche.</span>
@@ -44,7 +44,7 @@
             </div>
 
             {{-- Footer --}}
-            <p class="text-slate-600 text-xs">© {{ date('Y') }} Laboratoire LISI</p>
+            <p class="text-slate-600 text-xs">© {{ date('Y') }} LISI — Université Cadi Ayyad</p>
         </div>
 
         {{-- RIGHT PANEL — White --}}
@@ -72,7 +72,7 @@
                             </span>
                             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
                                 class="input-field w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-800 placeholder-slate-300"
-                                placeholder="nom@uiz.ac.ma">
+                                placeholder="exemple@uca.ac.ma">
                         </div>
                         <x-input-error :messages="$errors->get('email')" class="text-xs" />
                     </div>
