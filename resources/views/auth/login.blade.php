@@ -23,7 +23,7 @@
 
     {{-- College logo — outside, above card --}}
     <div class="flex flex-col items-center gap-2">
-        <img src="/logo_fssm_transparent.png" alt="Faculté des Sciences Semlalia — Université Cadi Ayyad" class="h-14 w-auto">
+        <img src="/logo_fssm_transparent.png" alt="Faculté des Sciences Semlalia — Université Cadi Ayyad" class="h-24 w-auto drop-shadow-sm">
     </div>
 
     {{-- Modal card --}}
