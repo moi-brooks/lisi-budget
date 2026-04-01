@@ -9,7 +9,7 @@
         <link rel="icon" type="image/png" href="/favicon.png">
         <link rel="apple-touch-icon" href="/favicon.png">
 
-        <title>LISI Budget — {{ config('app.name', 'LISI Budget') }}</title>
+        <title>Reliquat — {{ config('app.name', 'Reliquat') }}</title>
 
 
         <!-- Fonts -->
@@ -23,8 +23,8 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-slate-50">
             <div>
                 <a href="/" class="flex flex-col items-center space-y-2">
-                    <img src="/favicon.png" alt="LISI Budget" class="h-16 w-16 rounded-2xl shadow-lg">
-                    <span class="font-bold text-xl text-slate-800 tracking-tight">LISI <span class="text-blue-600">Budget</span></span>
+                    <img src="/favicon.png" alt="Reliquat" class="h-16 w-16 rounded-2xl shadow-lg">
+                    <span class="font-bold text-xl text-slate-800 tracking-tight">Reliquat</span>
                 </a>
             </div>
 
