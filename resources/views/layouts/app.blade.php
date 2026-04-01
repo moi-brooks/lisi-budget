@@ -9,7 +9,7 @@
         <link rel="icon" type="image/png" href="/favicon.png">
         <link rel="apple-touch-icon" href="/favicon.png">
 
-        <title>LISI Budget — {{ config('app.name', 'LISI Budget') }}</title>
+        <title>Reliquat — {{ config('app.name', 'Reliquat') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
