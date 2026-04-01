@@ -22,7 +22,7 @@
 
     {{-- Branding above the card --}}
     <div class="flex items-center gap-2.5">
-        <img src="/favicon.png" alt="Reliquat" class="h-9 w-9 rounded-xl shadow-md">
+        <img src="/favicon.png" alt="Reliquat" class="h-9 w-9">
         <span class="text-slate-800 font-bold text-xl tracking-tight">Reliquat</span>
     </div>
 
