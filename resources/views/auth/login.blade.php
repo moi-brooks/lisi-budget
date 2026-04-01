@@ -19,23 +19,12 @@
         .fssm-watermark { filter: invert(1) brightness(2); opacity: 0.06; pointer-events: none; }
     </style>
 </head>
-<body class="antialiased min-h-screen bg-[#f1f5f9] flex flex-col items-center justify-center px-4 py-8 gap-5">
+<body class="antialiased min-h-screen bg-[#f1f5f9] flex flex-col items-center justify-center px-4 py-8 gap-6">
 
-    {{-- Branding above card --}}
-    <a href="/" class="flex items-center gap-2.5 group">
-        <svg class="h-7 w-7 text-slate-800 group-hover:text-indigo-600 transition-colors" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="3.5" height="28" rx="1" fill="currentColor"/>
-            <rect x="6" y="6" width="18" height="3.5" rx="1" fill="currentColor"/>
-            <rect x="20.5" y="6" width="3.5" height="3.5" rx="1" fill="currentColor"/>
-            <rect x="21.5" y="8" width="3.5" height="10" rx="1" fill="currentColor"/>
-            <rect x="6" y="18" width="17" height="3.5" rx="1" fill="currentColor"/>
-            <rect x="20" y="16" width="3.5" height="5.5" rx="1" fill="currentColor"/>
-            <rect x="13" y="28" width="3.5" height="6" rx="1" fill="currentColor"/>
-            <rect x="19" y="24" width="3.5" height="10" rx="1" fill="currentColor"/>
-            <rect x="25" y="20" width="3.5" height="14" rx="1" fill="currentColor"/>
-        </svg>
-        <span class="font-bold text-slate-800 text-lg tracking-tight group-hover:text-indigo-600 transition-colors">Reliquat</span>
-    </a>
+    {{-- College logo — outside, above card --}}
+    <div class="flex flex-col items-center gap-2">
+        <img src="/logo_fssm_transparent.png" alt="Faculté des Sciences Semlalia — Université Cadi Ayyad" class="h-14 w-auto">
+    </div>
 
     {{-- Modal card --}}
     <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl shadow-slate-900/8 overflow-hidden flex" style="min-height: 520px;">
@@ -43,17 +32,23 @@
         {{-- LEFT — Navy panel --}}
         <div class="hidden md:flex md:w-[42%] relative flex-col justify-between p-10 overflow-hidden" style="background: #0f172a;">
 
-            {{-- FSSM logo watermark in background --}}
-            <div class="absolute inset-0 flex items-center justify-center">
-                <img src="/logo_fssm_transparent.png" alt="" class="fssm-watermark w-4/5 max-w-xs select-none">
+            {{-- Service branding inside modal --}}
+            <div class="flex items-center gap-2.5">
+                <svg class="h-7 w-7 text-white" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="6" y="6" width="3.5" height="28" rx="1" fill="currentColor"/>
+                    <rect x="6" y="6" width="18" height="3.5" rx="1" fill="currentColor"/>
+                    <rect x="20.5" y="6" width="3.5" height="3.5" rx="1" fill="currentColor"/>
+                    <rect x="21.5" y="8" width="3.5" height="10" rx="1" fill="currentColor"/>
+                    <rect x="6" y="18" width="17" height="3.5" rx="1" fill="currentColor"/>
+                    <rect x="20" y="16" width="3.5" height="5.5" rx="1" fill="currentColor"/>
+                    <rect x="13" y="28" width="3.5" height="6" rx="1" fill="currentColor"/>
+                    <rect x="19" y="24" width="3.5" height="10" rx="1" fill="currentColor"/>
+                    <rect x="25" y="20" width="3.5" height="14" rx="1" fill="currentColor"/>
+                </svg>
+                <span class="font-bold text-white text-lg tracking-tight">Reliquat</span>
             </div>
 
-            {{-- Content above watermark --}}
-            <div class="relative z-10 space-y-1">
-                <p class="text-indigo-400 text-[10px] font-bold uppercase tracking-[0.2em]">Laboratoire d'Informatique<br>et des Systèmes d'Intelligence</p>
-            </div>
-
-            <div class="relative z-10 space-y-3">
+            <div class="space-y-3">
                 <h1 class="text-white text-3xl font-bold leading-tight tracking-tight">
                     Bienvenue.
                 </h1>
@@ -61,13 +56,11 @@
                     Gérez votre budget<br>de recherche.
                 </p>
                 <p class="text-slate-600 text-xs leading-relaxed max-w-[220px] pt-1">
-                    Système de gestion budgétaire pour les laboratoires de l'Université Cadi Ayyad.
+                    Système de gestion budgétaire pour les laboratoires de recherche universitaire.
                 </p>
             </div>
 
-            <div class="relative z-10">
-                <img src="/logo_fssm_transparent.png" alt="Faculté des Sciences Semlalia" class="h-8 w-auto opacity-40 brightness-0 invert">
-            </div>
+            <p class="text-slate-700 text-[10px] font-semibold uppercase tracking-widest">LISI — Université Cadi Ayyad</p>
         </div>
 
         {{-- RIGHT — Form --}}
