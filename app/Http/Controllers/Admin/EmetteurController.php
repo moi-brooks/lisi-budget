@@ -99,6 +99,19 @@ class EmetteurController extends Controller
         return redirect()->route('admin.emetteurs.index')->with('success', 'Emetteur mis à jour.');
     }
 
+    public function resetPassword(Emetteur $emetteur)
+    {
+        $newPassword = Str::random(10);
+        $emetteur->user->update([
+            'password'             => Hash::make($newPassword),
+            'must_change_password' => true,
+        ]);
+
+        return redirect()->route('admin.emetteurs.index')
+            ->with('new_password', $newPassword)
+            ->with('new_password_user', $emetteur->user->name);
+    }
+
     public function destroy(Emetteur $emetteur)
     {
         $emetteur->user->delete(); // Cascades to emetteur
