@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('budgets', BudgetController::class);
         Route::resource('budgets.lignes', LigneBudgetaireController::class)->except(['show']);
         Route::resource('emetteurs', EmetteurController::class);
+        Route::post('/emetteurs/{emetteur}/reset-password', [EmetteurController::class, 'resetPassword'])->name('emetteurs.reset-password');
         
         Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions.index');
         Route::post('/propositions/{id}/approve', [PropositionController::class, 'approve'])->name('propositions.approve');
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
     // Emetteur Routes
     Route::middleware('role:emetteur')->prefix('emetteur')->name('emetteur.')->group(function () {
         Route::get('/dashboard', [EmetteurDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/change-password', [EmetteurDashboardController::class, 'changePassword'])->name('change-password');
         
         Route::resource('lignes', LigneProposeeController::class)->except(['show']);
         

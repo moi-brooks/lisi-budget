@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Emetteur;
 use App\Models\LigneBudgetProposee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -33,5 +34,20 @@ class DashboardController extends Controller
         ];
 
         return view('emetteur.dashboard', compact('stats', 'emetteur'));
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'new_password'              => 'required|string|min:8|confirmed',
+            'new_password_confirmation' => 'required',
+        ]);
+
+        auth()->user()->update([
+            'password'             => Hash::make($request->new_password),
+            'must_change_password' => false,
+        ]);
+
+        return back()->with('password_changed', true);
     }
 }

@@ -95,9 +95,7 @@
                     <div class="space-y-1.5">
                         <div class="flex items-center justify-between">
                             <label for="password" class="block text-[11px] font-semibold text-slate-400 uppercase tracking-widest">Mot de passe</label>
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}" class="text-[11px] text-indigo-500 hover:text-indigo-700 font-semibold transition-colors">Oublié ?</a>
-                            @endif
+                            <a href="{{ route('password.request') }}" class="text-[11px] text-indigo-500 hover:text-indigo-700 font-semibold transition-colors">Oublié ?</a>
                         </div>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
