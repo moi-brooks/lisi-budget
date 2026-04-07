@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
-                        <img src="/lisi_logo.png" alt="LISI" class="h-8 w-auto">
+                        <img src="/lisi_logo_transparent.png" alt="LISI" class="h-8 w-auto">
                         <div class="flex flex-col leading-none">
                             <span class="font-bold text-slate-800 text-sm tracking-tight group-hover:text-[#CC3333] transition-colors">E-Intendance</span>
                             <span class="text-slate-400 text-[10px] font-medium">Gestion Budgétaire</span>

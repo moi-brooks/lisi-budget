@@ -34,7 +34,7 @@
 
             {{-- LISI official logo --}}
             <div>
-                <img src="/lisi_logo.png" alt="LISI" class="h-10 w-auto brightness-0 invert opacity-90">
+                <img src="/lisi_logo_transparent.png" alt="LISI" class="h-10 w-auto brightness-0 invert opacity-90">
             </div>
 
             {{-- Hero --}}
