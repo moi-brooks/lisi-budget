@@ -5,19 +5,12 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2 group">
-                        <svg class="h-6 w-6 text-slate-700 group-hover:text-indigo-600 transition-colors" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="6" y="6" width="3.5" height="28" rx="1" fill="currentColor"/>
-                            <rect x="6" y="6" width="18" height="3.5" rx="1" fill="currentColor"/>
-                            <rect x="20.5" y="6" width="3.5" height="3.5" rx="1" fill="currentColor"/>
-                            <rect x="21.5" y="8" width="3.5" height="10" rx="1" fill="currentColor"/>
-                            <rect x="6" y="18" width="17" height="3.5" rx="1" fill="currentColor"/>
-                            <rect x="20" y="16" width="3.5" height="5.5" rx="1" fill="currentColor"/>
-                            <rect x="13" y="28" width="3.5" height="6" rx="1" fill="currentColor"/>
-                            <rect x="19" y="24" width="3.5" height="10" rx="1" fill="currentColor"/>
-                            <rect x="25" y="20" width="3.5" height="14" rx="1" fill="currentColor"/>
-                        </svg>
-                        <span class="font-bold text-slate-800 text-base tracking-tight group-hover:text-indigo-600 transition-colors">Reliquat</span>
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                        <img src="/lisi_logo.png" alt="LISI" class="h-8 w-auto">
+                        <div class="flex flex-col leading-none">
+                            <span class="font-bold text-slate-800 text-sm tracking-tight group-hover:text-[#CC3333] transition-colors">E-Intendance</span>
+                            <span class="text-slate-400 text-[10px] font-medium">Gestion Budgétaire</span>
+                        </div>
                     </a>
                 </div>
 
