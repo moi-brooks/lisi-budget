@@ -8,6 +8,7 @@ use App\Models\Budget;
 use App\Exports\EngagementsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Notifications\EngagementStatusNotification;
 
 class EngagementController extends Controller
 {
@@ -91,6 +92,8 @@ class EngagementController extends Controller
             'motif_refus' => null,
         ]);
         
+        $engagement->emetteur->user->notify(new EngagementStatusNotification($engagement));
+        
         return back()->with('success', 'Bon de commande approuvé avec succès.');
     }
 
@@ -111,7 +114,9 @@ class EngagementController extends Controller
             'motif_refus' => $validated['motif_refus'],
         ]);
         
-        return back()->with('success', 'Bon de commande rejeté.');
+        $engagement->emetteur->user->notify(new EngagementStatusNotification($engagement));
+        
+        return back()->with('success', 'Engagement rejeté.');
     }
 
     public function setTva(Request $request, $id)

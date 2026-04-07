@@ -75,7 +75,16 @@
     {{-- HEADER --}}
     <div class="header">
         <div class="header-left">
-            <img src="{{ public_path('lisi_logo_transparent.png') }}" style="height: 40px; width: auto;" alt="LISI">
+            <table style="width:100%; margin-bottom:5px; border:none; padding:0;">
+                <tr>
+                    <td style="border:none; padding:0; width:50%; vertical-align:middle;">
+                        <img src="{{ public_path('logo_fssm_transparent.png') }}" style="height: 45px; width: auto;" alt="FSSM">
+                    </td>
+                    <td style="border:none; padding:0; width:50%; vertical-align:middle;">
+                        <img src="{{ public_path('lisi_logo_transparent.png') }}" style="height: 35px; width: auto;" alt="LISI">
+                    </td>
+                </tr>
+            </table>
             <div class="company-name">E-Intendance</div>
             <div class="company-sub">Système de Gestion Budgétaire — LISI</div>
         </div>
