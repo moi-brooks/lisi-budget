@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Connexion — Reliquat</title>
+    <title>Connexion — E-Intendance</title>
     <link rel="icon" type="image/svg+xml" href="/icon.svg">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800&display=swap" rel="stylesheet">
@@ -30,37 +30,25 @@
     <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl shadow-slate-900/8 overflow-hidden flex" style="min-height: 520px;">
 
         {{-- LEFT — Navy panel --}}
-        <div class="hidden md:flex md:w-[42%] relative flex-col justify-between p-10 overflow-hidden" style="background: #0f172a;">
+        <div class="hidden md:flex md:w-[42%] flex-col justify-between p-10 overflow-hidden" style="background: #0f172a;">
 
-            {{-- Service branding inside modal --}}
-            <div class="flex items-center gap-2.5">
-                <svg class="h-7 w-7 text-white" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="6" y="6" width="3.5" height="28" rx="1" fill="currentColor"/>
-                    <rect x="6" y="6" width="18" height="3.5" rx="1" fill="currentColor"/>
-                    <rect x="20.5" y="6" width="3.5" height="3.5" rx="1" fill="currentColor"/>
-                    <rect x="21.5" y="8" width="3.5" height="10" rx="1" fill="currentColor"/>
-                    <rect x="6" y="18" width="17" height="3.5" rx="1" fill="currentColor"/>
-                    <rect x="20" y="16" width="3.5" height="5.5" rx="1" fill="currentColor"/>
-                    <rect x="13" y="28" width="3.5" height="6" rx="1" fill="currentColor"/>
-                    <rect x="19" y="24" width="3.5" height="10" rx="1" fill="currentColor"/>
-                    <rect x="25" y="20" width="3.5" height="14" rx="1" fill="currentColor"/>
-                </svg>
-                <span class="font-bold text-white text-lg tracking-tight">Reliquat</span>
+            {{-- LISI official logo --}}
+            <div>
+                <img src="/lisi_logo.png" alt="LISI" class="h-10 w-auto brightness-0 invert opacity-90">
             </div>
 
+            {{-- Hero --}}
             <div class="space-y-3">
+                <p class="text-[#CC3333] text-[10px] font-bold uppercase tracking-[0.15em]">Laboratoire d'Informatique<br>et des Systèmes d'Intelligence</p>
                 <h1 class="text-white text-3xl font-bold leading-tight tracking-tight">
-                    Bienvenue.
+                    E-Intendance
                 </h1>
-                <p class="text-slate-400 text-base font-normal leading-snug">
-                    Gérez votre budget<br>de recherche.
-                </p>
-                <p class="text-slate-600 text-xs leading-relaxed max-w-[220px] pt-1">
+                <p class="text-slate-400 text-sm leading-relaxed max-w-[220px]">
                     Système de gestion budgétaire pour les laboratoires de recherche universitaire.
                 </p>
             </div>
 
-            <p class="text-slate-700 text-[10px] font-semibold uppercase tracking-widest">LISI — Université Cadi Ayyad</p>
+            <p class="text-slate-600 text-[10px] font-semibold uppercase tracking-widest">LISI — Université Cadi Ayyad</p>
         </div>
 
         {{-- RIGHT — Form --}}
