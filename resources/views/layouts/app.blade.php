@@ -6,10 +6,10 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="/favicon.png">
-        <link rel="apple-touch-icon" href="/favicon.png">
+        <link rel="icon" type="image/png" href="/lisi_logo.png">
+        <link rel="apple-touch-icon" href="/lisi_logo.png">
 
-        <title>Reliquat — {{ config('app.name', 'Reliquat') }}</title>
+        <title>E-Intendance — {{ config('app.name', 'E-Intendance') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
