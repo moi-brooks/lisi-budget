@@ -75,7 +75,7 @@
     {{-- HEADER --}}
     <div class="header">
         <div class="header-left">
-            <img src="{{ public_path('lisi_logo.png') }}" style="height: 40px; width: auto;" alt="LISI">
+            <img src="{{ public_path('lisi_logo_transparent.png') }}" style="height: 40px; width: auto;" alt="LISI">
             <div class="company-name">E-Intendance</div>
             <div class="company-sub">Système de Gestion Budgétaire — LISI</div>
         </div>

@@ -6,8 +6,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="/lisi_logo.png">
-        <link rel="apple-touch-icon" href="/lisi_logo.png">
+        <link rel="icon" type="image/png" href="/lisi_logo_transparent.png">
+        <link rel="apple-touch-icon" href="/lisi_logo_transparent.png">
 
         <title>E-Intendance — {{ config('app.name', 'E-Intendance') }}</title>
 
