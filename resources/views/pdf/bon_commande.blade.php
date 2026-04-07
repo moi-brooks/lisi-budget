@@ -7,11 +7,11 @@
         body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #1e293b; background: #fff; }
 
         /* Header */
-        .header { display: table; width: 100%; margin-bottom: 28px; border-bottom: 3px solid #4f46e5; padding-bottom: 16px; }
+        .header { display: table; width: 100%; margin-bottom: 28px; border-bottom: 3px solid #CC3333; padding-bottom: 16px; }
         .header-left  { display: table-cell; width: 60%; vertical-align: middle; }
         .header-right { display: table-cell; width: 40%; text-align: right; vertical-align: middle; }
-        .company-name { font-size: 20px; font-weight: bold; color: #4f46e5; letter-spacing: 1px; }
-        .company-sub  { font-size: 10px; color: #64748b; margin-top: 3px; }
+        .company-name { font-size: 13px; font-weight: bold; color: #CC3333; letter-spacing: 1px; margin-top: 4px; }
+        .company-sub  { font-size: 9px; color: #64748b; margin-top: 2px; }
         .doc-title    { font-size: 22px; font-weight: bold; color: #1e293b; }
         .doc-number   { font-size: 11px; color: #64748b; margin-top: 4px; }
 
@@ -75,8 +75,9 @@
     {{-- HEADER --}}
     <div class="header">
         <div class="header-left">
-            <div class="company-name">LISI BUDGET</div>
-            <div class="company-sub">Système de Gestion Budgétaire</div>
+            <img src="{{ public_path('lisi_logo.png') }}" style="height: 40px; width: auto;" alt="LISI">
+            <div class="company-name">E-Intendance</div>
+            <div class="company-sub">Système de Gestion Budgétaire — LISI</div>
         </div>
         <div class="header-right">
             <div class="doc-title">BON DE COMMANDE</div>
@@ -190,7 +191,7 @@
     {{-- FOOTER --}}
     <div class="footer">
         <div class="footer-left">
-            Document généré le {{ now()->format('d/m/Y à H:i') }} — LISI Budget
+            Document généré le {{ now()->format('d/m/Y à H:i') }} — E-Intendance (LISI)
         </div>
         <div class="footer-right">
             BC N° {{ str_pad($engagement->id, 5, '0', STR_PAD_LEFT) }}
