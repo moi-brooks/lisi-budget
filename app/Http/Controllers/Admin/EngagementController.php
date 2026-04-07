@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Engagement;
+use App\Models\Budget;
+use App\Exports\EngagementsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -12,13 +14,47 @@ class EngagementController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('statut', 'en_attente');
+        $saison = $request->get('saison', '');
+
+        $saisons = Budget::select('saison')->distinct()->orderBy('saison', 'desc')->pluck('saison');
         
-        $engagements = Engagement::with(['emetteur.user', 'fournisseur', 'ligneProposee.ligne'])
-            ->where('statut', '=', $status)
-            ->latest()
-            ->get();
+        $query = Engagement::with(['emetteur.user', 'fournisseur', 'ligneProposee.ligne.budget'])
+            ->where('statut', '=', $status);
+
+        if ($saison) {
+            $query->whereHas('ligneProposee.ligne.budget', function ($q) use ($saison) {
+                $q->where('saison', $saison);
+            });
+        }
+
+        $engagements = $query->latest()->get();
             
-        return view('admin.engagement.index', compact('engagements', 'status'));
+        return view('admin.engagement.index', compact('engagements', 'status', 'saisons', 'saison'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $status = $request->get('statut');
+        $saison = $request->get('saison');
+
+        $filename = 'engagements_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.xlsx';
+        return (new EngagementsExport($saison, $status))->download($filename);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $status = $request->get('statut');
+        $saison = $request->get('saison');
+
+        // Reuse the logic from EngagementsExport
+        $export = new EngagementsExport($saison, $status);
+        $engagements = $export->collection();
+
+        $pdf = Pdf::loadView('pdf.engagements_export', compact('engagements', 'status', 'saison'))
+            ->setPaper('a4', 'landscape');
+
+        $filename = 'engagements_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.pdf';
+        return $pdf->download($filename);
     }
 
     public function show($id)
