@@ -8,6 +8,7 @@ use App\Models\Budget;
 use App\Exports\PropositionsExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Notifications\PropositionStatusNotification;
 
 class PropositionController extends Controller
 {
@@ -78,6 +79,8 @@ class PropositionController extends Controller
             'validated_at' => now(),
         ]);
         
+        $proposition->emetteur->user->notify(new PropositionStatusNotification($proposition));
+        
         return back()->with('success', 'Proposition approuvée avec succès.');
     }
 
@@ -99,6 +102,8 @@ class PropositionController extends Controller
         ]);
         
         $proposition->increment('nb_refus');
+        
+        $proposition->emetteur->user->notify(new PropositionStatusNotification($proposition));
         
         return back()->with('success', 'Proposition rejetée.');
     }
