@@ -100,7 +100,7 @@
                         <p class="text-sm text-slate-500">Veuillez examiner ce bon de commande avant de l'approuver ou de le rejeter.</p>
                     </div>
                     
-                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-6 md:mt-0 w-full md:w-auto">
+                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-6 md:mt-0 w-full md:w-auto" x-data>
                         <form action="{{ route('admin.engagements.approve', $engagement->id) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
                             <button type="submit" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition duration-300 shadow-sm" onclick="return confirm('Confirmer l\'approbation de ce BC ?');">

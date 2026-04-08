@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EmetteurController;
 use App\Http\Controllers\Admin\EngagementController as AdminEngagementController;
 use App\Http\Controllers\Admin\LigneBudgetaireController;
 use App\Http\Controllers\Admin\PropositionController;
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Emetteur\DashboardController as EmetteurDashboardController;
 use App\Http\Controllers\Emetteur\EngagementController as EmetteurEngagementController;
 use App\Http\Controllers\Emetteur\LigneProposeeController;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     // Admin Routes
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
         
         Route::resource('budgets', BudgetController::class);
         Route::resource('budgets.lignes', LigneBudgetaireController::class)->except(['show']);
