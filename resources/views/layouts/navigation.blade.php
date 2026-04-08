@@ -32,6 +32,9 @@
                         <x-nav-link :href="route('admin.engagements.index')" :active="request()->routeIs('admin.engagements.*')">
                             {{ __('Bons de commande') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.audit-log')" :active="request()->routeIs('admin.audit-log')">
+                            {{ __('Historique') }}
+                        </x-nav-link>
                     @elseif(auth()->user()->role === 'emetteur')
                         <x-nav-link :href="route('emetteur.dashboard')" :active="request()->routeIs('emetteur.dashboard')">
                             {{ __('Mon Espace') }}

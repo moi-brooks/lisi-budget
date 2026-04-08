@@ -89,7 +89,7 @@
                                 
                                 @if($status === 'en_attente')
                                     <td class="p-4 text-center border-l border-slate-50">
-                                        <div class="flex flex-col space-y-2">
+                                        <div class="flex flex-col space-y-2" x-data>
                                             <form action="{{ route('admin.propositions.approve', $prop->id) }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="w-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition rounded-lg px-3 py-1.5 font-semibold text-xs">Approuver</button>
