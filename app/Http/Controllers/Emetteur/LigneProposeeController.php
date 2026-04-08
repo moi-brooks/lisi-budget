@@ -32,6 +32,10 @@ class LigneProposeeController extends Controller
         $emetteur = auth()->user()->emetteur;
         if (!$emetteur) return redirect()->route('emetteur.dashboard');
 
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé. Aucune nouvelle soumission possible.');
+        }
+
         // Can only propose on lines for the active budget of this emetteur
         $lignes = LigneBudgetaire::where('budget_id', $emetteur->budget_id)->get();
         return view('emetteur.ligne.create', compact('lignes'));
@@ -40,6 +44,10 @@ class LigneProposeeController extends Controller
     public function store(Request $request)
     {
         $emetteur = auth()->user()->emetteur;
+
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé.');
+        }
 
         $validated = $request->validate([
             'ligne_budgetaire_id' => 'required|exists:ligne_budgetaires,id',
@@ -67,8 +75,13 @@ class LigneProposeeController extends Controller
 
     public function edit(LigneBudgetProposee $ligne)
     {
-        if ($ligne->emetteur_id !== auth()->user()->emetteur->id) {
+        $emetteur = auth()->user()->emetteur;
+        if ($ligne->emetteur_id !== $emetteur->id) {
             abort(403);
+        }
+
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé. Modification impossible.');
         }
 
         if ($ligne->statut === 'approuve') {
@@ -85,6 +98,10 @@ class LigneProposeeController extends Controller
 
         if ($ligne->emetteur_id !== $emetteur->id || $ligne->statut === 'approuve') {
             abort(403);
+        }
+
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé.');
         }
 
         $validated = $request->validate([
@@ -113,8 +130,13 @@ class LigneProposeeController extends Controller
 
     public function destroy(LigneBudgetProposee $ligne)
     {
-        if ($ligne->emetteur_id !== auth()->user()->emetteur->id || $ligne->statut === 'approuve') {
+        $emetteur = auth()->user()->emetteur;
+        if ($ligne->emetteur_id !== $emetteur->id || $ligne->statut === 'approuve') {
             abort(403);
+        }
+
+        if ($emetteur->budget->is_closed) {
+            return back()->with('error', 'L\'exercice budgétaire est clôturé.');
         }
 
         $ligne->delete();

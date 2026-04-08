@@ -25,6 +25,7 @@ class BudgetController extends Controller
             'annee' => 'required|integer|min:2020:max:2099',
             'saison' => 'required|string|max:20',
             'total' => 'required|numeric|min:0',
+            'date_limite' => 'nullable|date',
         ]);
 
         $validated['administrateur_id'] = auth()->id();
@@ -49,6 +50,7 @@ class BudgetController extends Controller
             'annee' => 'required|integer|min:2020:max:2099',
             'saison' => 'required|string|max:20',
             'total' => 'required|numeric|min:0',
+            'date_limite' => 'nullable|date',
         ]);
 
         $budget->update($validated);

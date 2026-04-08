@@ -62,5 +62,10 @@ class Emetteur extends Model
             ->sum('total_ttc');
         return (float) $this->dotation - $engage;
     }
-
+    /** Reliquat est-elle faible (moins de 10% de la dotation) ? */
+    public function getIsReliquatFaibleAttribute(): bool
+    {
+        if ($this->dotation <= 0) return false;
+        return $this->reliquat < ($this->dotation * 0.10);
+    }
 }

@@ -31,6 +31,10 @@ class EngagementController extends Controller
     {
         $emetteur = auth()->user()->emetteur;
         
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.engagements.index')->with('error', 'L\'exercice budgétaire est clôturé. Aucun nouvel engagement possible.');
+        }
+
         // Can only create Engagement on APPROVED propositions
         $lignesApprouvees = $emetteur->lignesProposees()
             ->with('ligne')
@@ -45,6 +49,10 @@ class EngagementController extends Controller
     public function store(Request $request)
     {
         $emetteur = auth()->user()->emetteur;
+
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.engagements.index')->with('error', 'L\'exercice budgétaire est clôturé.');
+        }
 
         $validated = $request->validate([
             'ligne_proposee_id' => 'required|exists:ligne_budget_proposees,id',
@@ -130,6 +138,10 @@ class EngagementController extends Controller
         
         if ($engagement->emetteur_id !== auth()->user()->emetteur->id || $engagement->statut !== 'en_attente') {
             abort(403);
+        }
+
+        if ($engagement->emetteur->budget->is_closed) {
+            return back()->with('error', 'L\'exercice budgétaire est clôturé.');
         }
 
         $validated = $request->validate([

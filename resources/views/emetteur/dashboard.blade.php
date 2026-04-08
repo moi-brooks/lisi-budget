@@ -35,6 +35,21 @@
                 </div>
             </div>
 
+            <!-- Reliquat Faible Warning -->
+            @if($emetteur->is_reliquat_faible)
+                <div class="mb-8 bg-rose-50 border border-rose-200 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="flex items-center space-x-3 bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3">
+                        <svg class="w-5 h-5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <p class="text-white font-bold text-sm uppercase tracking-wider">Alerte : Reliquat Faible</p>
+                    </div>
+                    <div class="px-5 py-4">
+                        <p class="text-rose-800 text-sm font-medium">Votre reliquat disponible est descendu en dessous de 10% de votre dotation initiale.</p>
+                        <p class="text-rose-600 text-xs mt-1">Veuillez surveiller vos prochains engagements pour éviter tout dépassement de budget.</p>
+                    </div>
+                </div>
+            @endif
 
             <!-- Cards Section -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

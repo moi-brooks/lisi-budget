@@ -18,12 +18,13 @@ class Budget extends Model
         'saison',
         'total',
         'administrateur_id',
+        'date_limite',
     ];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['annee', 'saison', 'total', 'administrateur_id'])
+            ->logOnly(['annee', 'saison', 'total', 'administrateur_id', 'date_limite'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
@@ -31,6 +32,7 @@ class Budget extends Model
     protected $casts = [
         'total' => 'decimal:2',
         'annee' => 'integer',
+        'date_limite' => 'date',
     ];
 
     public function administrateur(): BelongsTo
@@ -58,5 +60,14 @@ class Budget extends Model
     public function getReliquatAttribute(): float
     {
         return (float) $this->total - $this->total_alloue;
+    }
+
+    /** Est-ce que le budget est clôturé par la date limite ? */
+    public function getIsClosedAttribute(): bool
+    {
+        if (!$this->date_limite) {
+            return false; // Pas de limite
+        }
+        return now()->startOfDay()->greaterThan($this->date_limite);
     }
 }
