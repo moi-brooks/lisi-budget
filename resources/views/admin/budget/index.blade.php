@@ -27,6 +27,8 @@
                             <th class="p-4">Année</th>
                             <th class="p-4">Saison</th>
                             <th class="p-4">Total (DH)</th>
+                            <th class="p-4">Date Limite</th>
+                            <th class="p-4 text-center">Statut</th>
                             <th class="p-4 text-center">Actions</th>
                         </tr>
                     </thead>
@@ -36,6 +38,16 @@
                                 <td class="p-4 font-semibold text-slate-800">{{ $budget->annee }}</td>
                                 <td class="p-4 text-slate-600">{{ $budget->saison }}</td>
                                 <td class="p-4 font-medium text-slate-700">{{ number_format($budget->total, 2, ',', ' ') }}</td>
+                                <td class="p-4 text-slate-600">
+                                    {{ $budget->date_limite ? $budget->date_limite->format('d/m/Y') : 'Aucune' }}
+                                </td>
+                                <td class="p-4 text-center">
+                                    @if($budget->is_closed)
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">Clôturé</span>
+                                    @else
+                                        <span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-full">Actif</span>
+                                    @endif
+                                </td>
                                 <td class="p-4 text-center">
                                     <div class="flex justify-center space-x-2">
                                         <a href="{{ route('admin.budgets.show', $budget) }}" class="inline-flex items-center justify-center bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg text-sm transition font-medium">Voir</a>
@@ -50,7 +62,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="p-8 text-center text-slate-500 font-medium">Aucun budget défini.</td>
+                                <td colspan="6" class="p-8 text-center text-slate-500 font-medium">Aucun budget défini.</td>
                             </tr>
                         @endforelse
                     </tbody>
