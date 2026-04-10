@@ -24,11 +24,17 @@
     <div class="w-full max-w-[480px]">
         
         {{-- Branding Top --}}
-        <div class="text-center mb-12 transform-gpu transition-all duration-700 delay-100" x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 100)" :class="loaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'">
-            <div class="inline-flex items-center justify-center p-6 bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 mb-8 border border-slate-100 relative group overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-tr from-indigo-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <img src="/lisi_logo_transparent.png" alt="LISI" class="h-20 w-auto drop-shadow-xl relative z-10 transition-transform duration-500 group-hover:scale-105">
+        <div class="text-center mb-10 transform-gpu transition-all duration-700 delay-100" x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 100)" :class="loaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'">
+            <div class="flex items-center justify-center gap-8 mb-8">
+                <div class="flex-1 flex justify-end">
+                    <img src="/logo_fssm_transparent.png" alt="FSSM" class="h-16 w-auto drop-shadow-sm transition-transform duration-500 hover:scale-105">
+                </div>
+                <div class="h-12 w-px bg-slate-400 shrink-0"></div>
+                <div class="flex-1 flex justify-start">
+                    <img src="/lisi_logo_transparent.png" alt="LISI" class="h-16 w-auto drop-shadow-sm transition-transform duration-500 hover:scale-105">
+                </div>
             </div>
+            
             <h1 class="text-3xl font-black text-slate-900 tracking-tightest">E-Intendance</h1>
             <p class="text-slate-500 text-sm mt-3 font-semibold uppercase tracking-widest opacity-80">Laboratoire d'Informatique et des Systèmes d'Intelligence</p>
         </div>
@@ -97,13 +103,6 @@
 
         </div>
 
-        {{-- Institutional Footer --}}
-        <div class="mt-12 text-center opacity-60 flex flex-col items-center gap-4">
-            <img src="/logo_fssm_transparent.png" alt="FSSM" class="h-12 w-auto grayscale contrast-125 brightness-50">
-            <p class="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-bold">
-                Faculté des Sciences Semlalia — Marrakech
-            </p>
-        </div>
 
     </div>
 
