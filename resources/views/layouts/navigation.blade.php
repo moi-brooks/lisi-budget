@@ -30,7 +30,7 @@
                             {{ __('Propositions') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.engagements.index')" :active="request()->routeIs('admin.engagements.*')">
-                            {{ __('Bons de commande') }}
+                            {{ __('Expressions de besoins') }}
                         </x-nav-link>
                         <x-nav-link :href="route('admin.audit-log')" :active="request()->routeIs('admin.audit-log')">
                             {{ __('Historique') }}
@@ -43,7 +43,7 @@
                             {{ __('Mes Propositions') }}
                         </x-nav-link>
                         <x-nav-link :href="route('emetteur.engagements.index')" :active="request()->routeIs('emetteur.engagements.*')">
-                            {{ __('Mes Engagements') }}
+                            {{ __('Mes Expressions de besoins') }}
                         </x-nav-link>
                     @endif
                 </div>

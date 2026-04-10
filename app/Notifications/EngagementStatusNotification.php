@@ -40,9 +40,9 @@ class EngagementStatusNotification extends Notification implements ShouldQueue
         $statusLabel = $this->engagement->statut === 'approuve' ? 'approuvé' : 'rejeté';
         
         $mail = (new MailMessage)
-            ->subject('E-Intendance : Engagement ' . $statusLabel)
+            ->subject('E-Intendance : Expression de besoins ' . $statusLabel)
             ->greeting('Bonjour ' . $notifiable->name . ',')
-            ->line('Votre bon de commande (N° **' . $this->engagement->numero_bc . '**) d\'un montant de **' . $this->engagement->montant_ttc . ' DH** a été **' . $statusLabel . '** par l\'administration.');
+            ->line('Votre Expression de besoins (N° **' . $this->engagement->id . '**) d\'un montant de **' . number_format($this->engagement->total_ttc, 2, ',', ' ') . ' DH** a été **' . $statusLabel . '** par l\'administration.');
 
         if ($this->engagement->statut === 'rejete' && $this->engagement->motif_refus) {
             $mail->line('**Motif de refus :** ' . $this->engagement->motif_refus);
@@ -51,7 +51,7 @@ class EngagementStatusNotification extends Notification implements ShouldQueue
             $mail->success();
         }
 
-        $mail->action('Consulter mes engagements', route('emetteur.engagements.index'))
+        $mail->action('Consulter mes expressions de besoins', route('emetteur.engagements.index'))
             ->line('Merci d\'utiliser le système E-Intendance (LISI).');
 
         return $mail;
