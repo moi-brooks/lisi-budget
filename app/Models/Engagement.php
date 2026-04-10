@@ -54,7 +54,7 @@ class Engagement extends Model
         return $this->hasMany(Besoin::class);
     }
 
-    /** Total du bon de commande (stocké en base) */
+    /** Total de l'expression de besoins (stocké en base) */
     public function getMontantTotalAttribute(): float
     {
         return (float) $this->total_ttc;
