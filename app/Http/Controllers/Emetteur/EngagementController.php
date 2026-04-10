@@ -100,7 +100,7 @@ class EngagementController extends Controller
         $engagement->calculerTotal();
         $engagement->save();
 
-        return redirect()->route('emetteur.engagements.show', $engagement)->with('success', 'Bon de commande créé.');
+        return redirect()->route('emetteur.engagements.show', $engagement)->with('success', 'Expression de besoins créée.');
     }
 
     public function show($engagement)
@@ -127,7 +127,7 @@ class EngagementController extends Controller
         $pdf = Pdf::loadView('pdf.bon_commande', compact('engagement'))
             ->setPaper('a4', 'portrait');
 
-        $filename = 'BC-' . str_pad($engagement->id, 5, '0', STR_PAD_LEFT) . '.pdf';
+        $filename = 'EB-' . str_pad($engagement->id, 5, '0', STR_PAD_LEFT) . '.pdf';
 
         return $pdf->download($filename);
     }

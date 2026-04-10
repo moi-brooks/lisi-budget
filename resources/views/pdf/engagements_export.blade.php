@@ -47,9 +47,10 @@
             <div class="company-name">E-Intendance</div>
         </div>
         <div class="header-right">
-            <div class="doc-title">Liste des Engagements</div>
+            <div class="doc-title">Expressions de Besoins</div>
             <div class="doc-meta">
                 @if($saison) Saison: {{ $saison }} | @endif
+                @if(isset($annee) && $annee) Année: {{ $annee }} | @endif
                 Statut: {{ ucfirst(str_replace('_', ' ', $status)) }}
             </div>
         </div>
@@ -71,7 +72,7 @@
         <tbody>
             @foreach($engagements as $row)
                 <tr>
-                    <td>{{ $row['N° BC'] }}</td>
+                    <td>{{ $row['N° EB'] }}</td>
                     <td>{{ $row['Date'] }}</td>
                     <td>{{ $row['Émetteur'] }}</td>
                     <td>{{ mb_strimwidth($row['Fournisseur'], 0, 20, '...') }}</td>

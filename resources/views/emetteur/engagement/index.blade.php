@@ -2,13 +2,13 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
             <h2 class="font-semibold text-xl text-slate-800 leading-tight">
-                {{ __('Mes Bons de Commande') }}
+                {{ __('Mes Expressions de Besoins') }}
             </h2>
             <a href="{{ route('emetteur.engagements.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl transition duration-300 shadow-sm text-sm inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                Nouveau Bon de Commande
+                Nouvelle Expression de Besoins
             </a>
         </div>
     </x-slot>
@@ -68,7 +68,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="p-8 text-center text-slate-500 font-medium">Aucun bon de commande {{ str_replace('_', ' ', $status) }}.</td>
+                                <td colspan="5" class="p-8 text-center text-slate-500 font-medium">Aucune expression de besoins {{ str_replace('_', ' ', $status) }}.</td>
                             </tr>
                         @endforelse
                     </tbody>

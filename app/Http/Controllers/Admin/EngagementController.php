@@ -16,8 +16,14 @@ class EngagementController extends Controller
     {
         $status = $request->get('statut', 'en_attente');
         $saison = $request->get('saison', '');
+        $annee = $request->get('annee', '');
+        $emetteur_id = $request->get('emetteur_id', '');
+        $ligne_id = $request->get('ligne_id', '');
 
         $saisons = Budget::select('saison')->distinct()->orderBy('saison', 'desc')->pluck('saison');
+        $annees = Budget::select('annee')->distinct()->orderBy('annee', 'desc')->pluck('annee');
+        $emetteurs = \App\Models\Emetteur::with('user')->get();
+        $lignes = \App\Models\LigneBudgetaire::all();
         
         $query = Engagement::with(['emetteur.user', 'fournisseur', 'ligneProposee.ligne.budget'])
             ->where('statut', '=', $status);
@@ -28,33 +34,59 @@ class EngagementController extends Controller
             });
         }
 
+        if ($annee) {
+            $query->whereHas('ligneProposee.ligne.budget', function ($q) use ($annee) {
+                $q->where('annee', $annee);
+            });
+        }
+
+        if ($emetteur_id) {
+            $query->where('emetteur_id', $emetteur_id);
+        }
+
+        if ($ligne_id) {
+            $query->whereHas('ligneProposee', function ($q) use ($ligne_id) {
+                $q->where('ligne_id', $ligne_id);
+            });
+        }
+
         $engagements = $query->latest()->get();
             
-        return view('admin.engagement.index', compact('engagements', 'status', 'saisons', 'saison'));
+        return view('admin.engagement.index', compact(
+            'engagements', 'status', 'saisons', 'saison', 
+            'annees', 'annee', 'emetteurs', 'emetteur_id', 'lignes', 'ligne_id'
+        ));
     }
 
     public function exportExcel(Request $request)
     {
         $status = $request->get('statut');
         $saison = $request->get('saison');
+        $annee = $request->get('annee');
+        $emetteur_id = $request->get('emetteur_id');
+        $ligne_id = $request->get('ligne_id');
 
-        $filename = 'engagements_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.xlsx';
-        return (new EngagementsExport($saison, $status))->download($filename);
+        $filename = 'expression_besoins_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.xlsx';
+        return (new EngagementsExport($saison, $status, $annee, $emetteur_id, $ligne_id))
+            ->download($filename);
     }
 
     public function exportPdf(Request $request)
     {
         $status = $request->get('statut');
         $saison = $request->get('saison');
+        $annee = $request->get('annee');
+        $emetteur_id = $request->get('emetteur_id');
+        $ligne_id = $request->get('ligne_id');
 
         // Reuse the logic from EngagementsExport
-        $export = new EngagementsExport($saison, $status);
+        $export = new EngagementsExport($saison, $status, $annee, $emetteur_id, $ligne_id);
         $engagements = $export->collection();
 
-        $pdf = Pdf::loadView('pdf.engagements_export', compact('engagements', 'status', 'saison'))
+        $pdf = Pdf::loadView('pdf.engagements_export', compact('engagements', 'status', 'saison', 'annee'))
             ->setPaper('a4', 'landscape');
 
-        $filename = 'engagements_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.pdf';
+        $filename = 'expression_besoins_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.pdf';
         return $pdf->download($filename);
     }
 
@@ -74,7 +106,7 @@ class EngagementController extends Controller
         $pdf = Pdf::loadView('pdf.bon_commande', compact('engagement'))
             ->setPaper('a4', 'portrait');
 
-        $filename = 'BC-' . str_pad($engagement->id, 5, '0', STR_PAD_LEFT) . '.pdf';
+        $filename = 'EB-' . str_pad($engagement->id, 5, '0', STR_PAD_LEFT) . '.pdf';
 
         return $pdf->download($filename);
     }
@@ -84,7 +116,7 @@ class EngagementController extends Controller
         $engagement = Engagement::findOrFail($id);
         
         if ($engagement->statut !== 'en_attente') {
-            return back()->with('error', 'Cet engagement a déjà été traité.');
+            return back()->with('error', 'Cette requête a déjà été traitée.');
         }
 
         $engagement->update([
@@ -94,7 +126,7 @@ class EngagementController extends Controller
         
         $engagement->emetteur->user->notify(new EngagementStatusNotification($engagement));
         
-        return back()->with('success', 'Bon de commande approuvé avec succès.');
+        return back()->with('success', 'Expression de besoins approuvée avec succès.');
     }
 
     public function reject(Request $request, $id)
@@ -102,7 +134,7 @@ class EngagementController extends Controller
         $engagement = Engagement::findOrFail($id);
         
         if ($engagement->statut !== 'en_attente') {
-            return back()->with('error', 'Cet engagement a déjà été traité.');
+            return back()->with('error', 'Cette requête a déjà été traitée.');
         }
 
         $validated = $request->validate([
@@ -116,7 +148,7 @@ class EngagementController extends Controller
         
         $engagement->emetteur->user->notify(new EngagementStatusNotification($engagement));
         
-        return back()->with('success', 'Engagement rejeté.');
+        return back()->with('success', 'Expression de besoins rejetée.');
     }
 
     public function setTva(Request $request, $id)
@@ -128,7 +160,7 @@ class EngagementController extends Controller
         $engagement = Engagement::findOrFail($id);
         
         if ($engagement->statut !== 'en_attente') {
-            return back()->with('error', 'Cet engagement a déjà été traité.');
+            return back()->with('error', 'Cette expression de besoins a déjà été traitée.');
         }
 
         $engagement->tva = $validated['tva'];

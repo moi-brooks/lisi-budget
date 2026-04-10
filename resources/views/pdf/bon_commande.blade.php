@@ -89,7 +89,7 @@
             <div class="company-sub">Système de Gestion Budgétaire — LISI</div>
         </div>
         <div class="header-right">
-            <div class="doc-title">BON DE COMMANDE</div>
+            <div class="doc-title">EXPRESSION DE BESOINS</div>
             <div class="doc-number">N° {{ str_pad($engagement->id, 5, '0', STR_PAD_LEFT) }}</div>
             <div style="margin-top:6px;">
                 @php
@@ -129,9 +129,9 @@
             <div class="info-value">{{ $engagement->fournisseur?->nom ?? 'Non défini' }}</div>
         </div>
         <div class="info-card">
-            <div class="info-label">Date de commande</div>
+            <div class="info-label">Date de soumission</div>
             <div class="info-value">{{ \Carbon\Carbon::parse($engagement->date)->format('d/m/Y') }}</div>
-            <div class="info-sub">Créé le {{ $engagement->created_at?->format('d/m/Y') ?? 'N/A' }}</div>
+            <div class="info-sub">Généré le {{ $engagement->created_at?->format('d/m/Y') ?? 'N/A' }}</div>
         </div>
     </div>
 
@@ -142,6 +142,10 @@
             <span class="ligne-code">{{ $engagement->ligneProposee?->ligne?->code_complet ?? 'N/A' }}</span>
             <span class="ligne-nom">{{ $engagement->ligneProposee?->ligne?->nom ?? 'N/A' }}</span>
         </div>
+        @if($engagement->ligneProposee?->description)
+            <div class="info-label" style="margin-top:10px; font-size: 8px;">Détails de la proposition</div>
+            <div style="font-size: 11px; color: #475569; italic: font-style;">{{ $engagement->ligneProposee->description }}</div>
+        @endif
     </div>
 
     {{-- ARTICLES --}}
@@ -203,7 +207,7 @@
             Document généré le {{ now()->format('d/m/Y à H:i') }} — E-Intendance (LISI)
         </div>
         <div class="footer-right">
-            BC N° {{ str_pad($engagement->id, 5, '0', STR_PAD_LEFT) }}
+            EB N° {{ str_pad($engagement->id, 5, '0', STR_PAD_LEFT) }}
         </div>
     </div>
 

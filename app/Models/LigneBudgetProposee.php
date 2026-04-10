@@ -15,6 +15,7 @@ class LigneBudgetProposee extends Model
     protected $fillable = [
         'ligne_budgetaire_id',
         'emetteur_id',
+        'description',
         'montant',
         'statut',
         'motif_refus',
