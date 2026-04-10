@@ -1,97 +1,161 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Bons de Commande (Engagements)') }}
-        </h2>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <h2 class="font-bold text-2xl text-slate-800 leading-tight">
+                    {{ __('Expression de besoins') }}
+                </h2>
+                <p class="text-sm text-slate-500 mt-1">Gérez et validez les demandes d'achat du laboratoire</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <a href="{{ route('admin.engagements.export.excel', request()->all()) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold transition shadow-sm shadow-emerald-200">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Excel
+                </a>
+                <a href="{{ route('admin.engagements.export.pdf', request()->all()) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-sm font-bold transition shadow-sm shadow-rose-200" target="_blank">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                    PDF
+                </a>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-slate-50/50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                    {{ session('error') }}
+                <div class="mb-6 bg-emerald-50 border-l-4 border-emerald-500 text-emerald-700 p-4 rounded-xl shadow-sm flex items-center gap-3">
+                    <svg class="h-5 w-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    <span class="font-medium">{{ session('success') }}</span>
                 </div>
             @endif
 
-            <!-- Tabs & Actions -->
-            <div class="mb-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <nav class="flex space-x-2 bg-white p-1.5 rounded-2xl shadow-sm border border-slate-100 max-w-fit w-full sm:w-auto">
-                    <a href="{{ route('admin.engagements.index', ['statut' => 'en_attente', 'saison' => $saison]) }}" class="{{ $status === 'en_attente' ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }} rounded-xl px-5 py-2.5 text-sm font-semibold transition duration-300">
-                        En attente
-                    </a>
-                    <a href="{{ route('admin.engagements.index', ['statut' => 'approuve', 'saison' => $saison]) }}" class="{{ $status === 'approuve' ? 'bg-emerald-50 text-emerald-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }} rounded-xl px-5 py-2.5 text-sm font-semibold transition duration-300">
-                        Approuvés
-                    </a>
-                    <a href="{{ route('admin.engagements.index', ['statut' => 'rejete', 'saison' => $saison]) }}" class="{{ $status === 'rejete' ? 'bg-rose-50 text-rose-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }} rounded-xl px-5 py-2.5 text-sm font-semibold transition duration-300">
-                        Rejetés
-                    </a>
-                </nav>
+            <!-- Tabs & Filters Card -->
+            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-8">
+                <div class="flex flex-col gap-6">
+                    <!-- Status Tabs -->
+                    <nav class="flex p-1 bg-slate-100 rounded-2xl w-fit">
+                        <a href="{{ route('admin.engagements.index', array_merge(request()->except('statut'), ['statut' => 'en_attente'])) }}" 
+                           class="{{ $status === 'en_attente' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }} px-6 py-2 rounded-xl text-sm font-bold transition-all duration-200">
+                            En attente
+                        </a>
+                        <a href="{{ route('admin.engagements.index', array_merge(request()->except('statut'), ['statut' => 'approuve'])) }}" 
+                           class="{{ $status === 'approuve' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }} px-6 py-2 rounded-xl text-sm font-bold transition-all duration-200">
+                            Approuvés
+                        </a>
+                        <a href="{{ route('admin.engagements.index', array_merge(request()->except('statut'), ['statut' => 'rejete'])) }}" 
+                           class="{{ $status === 'rejete' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-700' }} px-6 py-2 rounded-xl text-sm font-bold transition-all duration-200">
+                            Rejetés
+                        </a>
+                    </nav>
 
-                <!-- Filters & Export -->
-                <div class="flex items-center gap-3 w-full sm:w-auto">
-                    <!-- Saison Dropdown -->
-                    <form method="GET" action="{{ route('admin.engagements.index') }}" class="flex items-center" id="filter-form">
+                    <!-- Advanced Filters Form -->
+                    <form method="GET" action="{{ route('admin.engagements.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end border-t border-slate-50 pt-6">
                         <input type="hidden" name="statut" value="{{ $status }}">
-                        <select name="saison" onchange="document.getElementById('filter-form').submit()" class="rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm text-slate-600 bg-white">
-                            <option value="">Toutes les saisons</option>
-                            @foreach($saisons as $s)
-                                <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>Saison {{ $s }}</option>
-                            @endforeach
-                        </select>
-                    </form>
+                        
+                        <!-- Année -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Année</label>
+                            <select name="annee" class="w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all" onchange="this.form.submit()">
+                                <option value="">Toutes les années</option>
+                                @foreach($annees as $a)
+                                    <option value="{{ $a }}" {{ $annee == $a ? 'selected' : '' }}>{{ $a }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-                    <!-- Export Buttons -->
-                    <a href="{{ route('admin.engagements.export.excel', ['statut' => $status, 'saison' => $saison]) }}" class="inline-flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl text-sm font-semibold transition">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        Excel
-                    </a>
-                    <a href="{{ route('admin.engagements.export.pdf', ['statut' => $status, 'saison' => $saison]) }}" class="inline-flex items-center gap-1.5 px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-xl text-sm font-semibold transition" target="_blank">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                        PDF
-                    </a>
+                        <!-- Saison -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Saison</label>
+                            <select name="saison" class="w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all" onchange="this.form.submit()">
+                                <option value="">Toutes les saisons</option>
+                                @foreach($saisons as $s)
+                                    <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>Saison {{ $s }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Émetteur -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Émetteur</label>
+                            <select name="emetteur_id" class="w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all" onchange="this.form.submit()">
+                                <option value="">Tous les émetteurs</option>
+                                @foreach($emetteurs as $e)
+                                    <option value="{{ $e->id }}" {{ $emetteur_id == $e->id ? 'selected' : '' }}>{{ $e->user->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Ligne Budgétaire -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Ligne Budgétaire</label>
+                            <select name="ligne_id" class="w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all" onchange="this.form.submit()">
+                                <option value="">Toutes les lignes</option>
+                                @foreach($lignes as $l)
+                                    <option value="{{ $l->id }}" {{ $ligne_id == $l->id ? 'selected' : '' }}>{{ $l->code_complet }} - {{ $l->nom }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl border border-slate-100 mb-8">
+            <!-- Table Card -->
+            <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-3xl border border-slate-100">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50/50 uppercase text-xs text-slate-500 font-semibold tracking-wider border-b border-slate-100">
-                            <th class="p-4">Date</th>
-                            <th class="p-4">Émetteur</th>
-                            <th class="p-4">Objet</th>
-                            <th class="p-4">Montant Total TTC (DH)</th>
-                            <th class="p-4 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($engagements as $engagement)
-                            <tr class="border-b border-slate-100 hover:bg-slate-50 transition duration-150">
-                                <td class="p-4 text-slate-600">{{ $engagement->created_at->format('d/m/Y') }}</td>
-                                <td class="p-4 font-semibold text-slate-800">{{ $engagement->emetteur->user->name }}</td>
-                                <td class="p-4">
-                                    <div class="font-bold text-slate-700">{{ $engagement->objet }}</div>
-                                    <div class="text-xs text-slate-400 mt-0.5">{{ $engagement->fournisseur?->nom ?? 'Fournisseur non défini' }}</div>
-                                </td>
-                                <td class="p-4 font-bold text-indigo-600">{{ number_format($engagement->montant_total, 2, ',', ' ') }}</td>
-                                
-                                <td class="p-4 text-center">
-                                    <a href="{{ route('admin.engagements.show', $engagement) }}" class="inline-flex items-center justify-center bg-indigo-50 text-indigo-700 hover:bg-indigo-100 px-3 py-1.5 rounded-lg text-sm transition font-medium">Voir détails</a>
-                                </td>
+                            <tr class="bg-slate-50/50 uppercase text-xs text-slate-500 font-bold tracking-wider border-b border-slate-100">
+                                <th class="p-5">Détails de la demande</th>
+                                <th class="p-5">Émetteur / Budget</th>
+                                <th class="p-5 text-right">Montant TTC</th>
+                                <th class="p-5 text-center">Actions</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="p-8 text-center text-slate-500 font-medium">Aucun bon de commande {{ str_replace('_', ' ', $status) }}.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($engagements as $engagement)
+                                <tr class="hover:bg-slate-50/80 transition duration-150 group">
+                                    <td class="p-5">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-10 w-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-xs">
+                                                EB
+                                            </div>
+                                            <div>
+                                                <div class="font-bold text-slate-800">{{ $engagement->objet }}</div>
+                                                <div class="text-xs text-slate-400 mt-0.5">N° {{ str_pad($engagement->id, 5, '0', STR_PAD_LEFT) }} • {{ $engagement->created_at->format('d/m/Y') }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="p-5">
+                                        <div class="font-semibold text-slate-700">{{ $engagement->emetteur->user->name }}</div>
+                                        <div class="text-xs text-indigo-500 mt-0.5">Saison {{ $engagement->ligneProposee?->ligne?->budget?->saison ?? '—' }}</div>
+                                    </td>
+                                    <td class="p-5 text-right font-black text-slate-900">
+                                        {{ number_format($engagement->total_ttc, 2, ',', ' ') }} <span class="text-[10px] text-slate-400 font-normal ml-0.5">DH</span>
+                                    </td>
+                                    
+                                    <td class="p-5 text-center">
+                                        <a href="{{ route('admin.engagements.show', $engagement) }}" class="inline-flex items-center justify-center bg-white border border-slate-200 group-hover:border-indigo-200 text-slate-600 group-hover:text-indigo-600 px-4 py-2 rounded-xl text-sm transition-all font-bold hover:shadow-sm">
+                                            Traiter
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="p-16 text-center">
+                                        <div class="flex flex-col items-center justify-center">
+                                            <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300">
+                                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                                            </div>
+                                            <p class="text-slate-500 font-bold">Aucune expression de besoins trouvée</p>
+                                            <p class="text-sm text-slate-400 mt-1">Essayez d'ajuster vos filtres pour voir plus de résultats.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
             

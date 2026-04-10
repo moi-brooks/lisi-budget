@@ -91,12 +91,12 @@
                 <!-- Engagements Actions -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 border border-slate-100 flex flex-col">
                     <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center justify-between">
-                        <span>Mes Bons de Commande</span>
+                        <span>Mes Expressions de Besoins</span>
                         <span class="bg-violet-50 text-violet-600 text-xs font-bold px-3 py-1 rounded-full">{{ $stats['engagements_count'] }}</span>
                     </h3>
-                    <p class="text-slate-500 text-sm mb-8 flex-grow">Saisissez vos bons de commande sur vos lignes budgétaires approuvées.</p>
+                    <p class="text-slate-500 text-sm mb-8 flex-grow">Saisissez vos expressions de besoins sur vos lignes budgétaires approuvées.</p>
                     <div class="flex space-x-3 mt-auto">
-                        <a href="{{ route('emetteur.engagements.create') }}" class="flex-1 text-center bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">Créer un BC</a>
+                        <a href="{{ route('emetteur.engagements.create') }}" class="flex-1 text-center bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">Initialiser EB</a>
                         <a href="{{ route('emetteur.engagements.index') }}" class="flex-1 text-center bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">Voir la liste</a>
                     </div>
                 </div>

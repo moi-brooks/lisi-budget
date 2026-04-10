@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
             <h2 class="font-semibold text-xl text-slate-800 leading-tight">
-                {{ __('Détail Bon de Commande') }}
+                {{ __('Détail Expression de Besoins') }}
             </h2>
             <x-status-badge :status="$engagement->statut" class="text-sm px-4 py-1.5 shadow-sm" />
         </div>
@@ -28,7 +28,7 @@
 
             @if($engagement->statut === 'rejete')
                 <div class="mb-8 bg-rose-50 border-l-4 border-rose-500 p-5 rounded-r-2xl shadow-sm">
-                    <h3 class="font-bold text-rose-800 mb-2">Votre bon de commande a été refusé par l'administration. Motif :</h3>
+                    <h3 class="font-bold text-rose-800 mb-2">Votre expression de besoins a été refusée par l'administration. Motif :</h3>
                     <p class="text-rose-700 italic text-sm leading-relaxed">{{ $engagement->motif_refus }}</p>
                 </div>
             @endif
@@ -114,7 +114,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-8 text-center text-slate-500 font-medium italic">Aucun article dans ce bon de commande.</td>
+                                    <td colspan="5" class="p-8 text-center text-slate-500 font-medium italic">Aucun article dans cette expression de besoins.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -212,7 +212,7 @@
             <div class="mt-8 flex items-center justify-between">
                 <a href="{{ route('emetteur.engagements.index') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition duration-150">
                     <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Retour à mes bons de commande
+                    Retour à mes expressions de besoins
                 </a>
                 <a href="{{ route('emetteur.engagements.download', $engagement->id) }}"
                    class="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl shadow-sm transition duration-300">
