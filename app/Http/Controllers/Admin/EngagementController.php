@@ -51,10 +51,28 @@ class EngagementController extends Controller
         }
 
         $engagements = $query->latest()->get();
+
+        // Resolve selected budget for official exports
+        $selectedBudget = null;
+        if ($saison) {
+            $selectedBudget = Budget::where('saison', $saison)->first();
+        } else {
+            // Default to latest budget if no saison selected
+            $selectedBudget = Budget::orderByDesc('annee')->orderByDesc('created_at')->first();
+        }
+
+        $hasApprovedEngagements = false;
+        if ($selectedBudget) {
+            $hasApprovedEngagements = Engagement::where('statut', 'approuve')
+                ->whereHas('ligneProposee.ligne', function($q) use ($selectedBudget) {
+                    $q->where('budget_id', $selectedBudget->id);
+                })->exists();
+        }
             
         return view('admin.engagement.index', compact(
             'engagements', 'status', 'saisons', 'saison', 
-            'annees', 'annee', 'emetteurs', 'emetteur_id', 'lignes', 'ligne_id'
+            'annees', 'annee', 'emetteurs', 'emetteur_id', 'lignes', 'ligne_id',
+            'selectedBudget', 'hasApprovedEngagements'
         ));
     }
 
@@ -126,7 +144,7 @@ class EngagementController extends Controller
         
         $engagement->emetteur->user->notify(new EngagementStatusNotification($engagement));
         
-        return back()->with('success', 'Expression de besoins approuvée avec succès.');
+        return back()->with('success', 'Expressions de besoins approuvée avec succès.');
     }
 
     public function reject(Request $request, $id)
@@ -148,7 +166,7 @@ class EngagementController extends Controller
         
         $engagement->emetteur->user->notify(new EngagementStatusNotification($engagement));
         
-        return back()->with('success', 'Expression de besoins rejetée.');
+        return back()->with('success', 'Expressions de besoins rejetée.');
     }
 
     public function setTva(Request $request, $id)
@@ -160,7 +178,7 @@ class EngagementController extends Controller
         $engagement = Engagement::findOrFail($id);
         
         if ($engagement->statut !== 'en_attente') {
-            return back()->with('error', 'Cette expression de besoins a déjà été traitée.');
+            return back()->with('error', 'Cette expressions de besoins a déjà été traitée.');
         }
 
         $engagement->tva = $validated['tva'];
