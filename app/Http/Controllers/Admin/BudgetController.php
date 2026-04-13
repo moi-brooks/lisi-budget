@@ -36,7 +36,12 @@ class BudgetController extends Controller
 
     public function show(Budget $budget)
     {
-        return view('admin.budget.show', compact('budget'));
+        $hasApprovedEngagements = \App\Models\Engagement::where('statut', 'approuve')
+            ->whereHas('ligneProposee.ligne', function($q) use ($budget) {
+                $q->where('budget_id', $budget->id);
+            })->exists();
+
+        return view('admin.budget.show', compact('budget', 'hasApprovedEngagements'));
     }
 
     public function edit(Budget $budget)
