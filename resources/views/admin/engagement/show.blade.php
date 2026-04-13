@@ -103,13 +103,13 @@
                     <div class="absolute inset-y-0 left-0 w-2 bg-indigo-500"></div>
                     <div class="mb-6 md:mb-0">
                         <h4 class="font-bold text-slate-800 text-xl mb-1">Action requise</h4>
-                        <p class="text-sm text-slate-500 font-medium">Révision finale de l'expression de besoins.</p>
+                        <p class="text-sm text-slate-500 font-medium">Révision finale de l'expressions de besoins.</p>
                     </div>
                     
                     <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                         <form action="{{ route('admin.engagements.approve', $engagement->id) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
-                            <button type="submit" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-2xl transition duration-300 shadow-lg shadow-emerald-200" onclick="return confirm('Approuver cette expression de besoins ?');">
+                            <button type="submit" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-2xl transition duration-300 shadow-lg shadow-emerald-200" onclick="return confirm('Approuver cette expressions de besoins ?');">
                                 Approuver
                             </button>
                         </form>
@@ -119,7 +119,7 @@
                         </button>
                     </div>
 
-                    <x-modal-reject :id="$engagement->id" :route="route('admin.engagements.reject', $engagement->id)" title="Rejeter l'expression de besoins" />
+                    <x-modal-reject :id="$engagement->id" :route="route('admin.engagements.reject', $engagement->id)" title="Rejeter l'expressions de besoins" />
                 </div>
             @endif
 
