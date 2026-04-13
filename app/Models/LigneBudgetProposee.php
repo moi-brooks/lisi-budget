@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
@@ -45,5 +46,24 @@ class LigneBudgetProposee extends Model
     public function emetteur(): BelongsTo
     {
         return $this->belongsTo(Emetteur::class);
+    }
+
+    public function engagements(): HasMany
+    {
+        return $this->hasMany(Engagement::class, 'ligne_proposee_id');
+    }
+
+    /** Montant déjà engagé (TTC) sur cette ligne (en attente ou approuvé) */
+    public function getMontantConsommeAttribute(): float
+    {
+        return (float) $this->engagements()
+            ->whereIn('statut', ['en_attente', 'approuve'])
+            ->sum('total_ttc');
+    }
+
+    /** Montant restant disponible sur cette proposition spécifique */
+    public function getMontantDisponibleAttribute(): float
+    {
+        return (float) $this->montant - $this->montant_consomme;
     }
 }

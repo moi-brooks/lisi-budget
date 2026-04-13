@@ -74,6 +74,22 @@ class EngagementController extends Controller
             abort(403, 'Ligne non approuvée.');
         }
 
+        // --- NEW: Budget Check ---
+        $totalHT = 0;
+        if ($request->has('intitule')) {
+            foreach ($request->intitule as $key => $intitule) {
+                $totalHT += ($request->quantite[$key] * $request->prix_unitaire[$key]);
+            }
+        }
+        $totalTTC = $totalHT + ($totalHT * ($validated['tva'] / 100));
+        
+        if ($totalTTC > $ligne->montant_disponible) {
+            $dispo = number_format($ligne->montant_disponible, 2, ',', ' ');
+            $demande = number_format($totalTTC, 2, ',', ' ');
+            return back()->withInput()->with('error', "Dépassement de budget ! Vous demandez {$demande} DH alors qu'il ne reste que {$dispo} DH disponibles sur cette ligne.");
+        }
+        // -------------------------
+
         $engagement = $emetteur->engagements()->create([
             'ligne_proposee_id' => $validated['ligne_proposee_id'],
             'fournisseur_id' => $validated['fournisseur_id'],
