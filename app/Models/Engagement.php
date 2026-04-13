@@ -26,6 +26,13 @@ class Engagement extends Model
         'motif_refus',
     ];
 
+    protected $casts = [
+        'date' => 'date',
+        'tva' => 'decimal:2',
+        'total_ht' => 'decimal:2',
+        'total_ttc' => 'decimal:2',
+    ];
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

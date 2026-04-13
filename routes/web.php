@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\EngagementController as AdminEngagementController
 use App\Http\Controllers\Admin\LigneBudgetaireController;
 use App\Http\Controllers\Admin\PropositionController;
 use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Emetteur\DashboardController as EmetteurDashboardController;
 use App\Http\Controllers\Emetteur\EngagementController as EmetteurEngagementController;
 use App\Http\Controllers\Emetteur\LigneProposeeController;
@@ -53,6 +54,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/engagements/{id}/reject', [AdminEngagementController::class, 'reject'])->name('engagements.reject');
         Route::post('/engagements/{id}/tva', [AdminEngagementController::class, 'setTva'])->name('engagements.tva');
         Route::get('/engagements/{id}/download', [AdminEngagementController::class, 'download'])->name('engagements.download');
+
+        // Aggregated Official Exports
+        Route::get('/exports/besoins/{budget}', [ExportController::class, 'exportDocx'])->name('exports.besoins');
+        Route::get('/exports/excel/{budget}', [ExportController::class, 'exportExcel'])->name('exports.excel');
     });
 
     // Emetteur Routes
