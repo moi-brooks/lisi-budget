@@ -18,6 +18,12 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div class="mb-4 bg-red-600 border border-red-700 text-white px-4 py-3 rounded-lg relative shadow-lg font-bold">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             @if($lignesApprouvees->isEmpty())
                 <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
                     <p class="text-yellow-700 font-bold">Vous n'avez aucune ligne budgétaire approuvée.</p>
@@ -38,7 +44,7 @@
                             <option value="">-- Sélectionner une ligne approuvée --</option>
                             @foreach($lignesApprouvees as $ligne_prop)
                                 <option value="{{ $ligne_prop->id }}" {{ old('ligne_proposee_id', request('ligne_id')) == $ligne_prop->id ? 'selected' : '' }}>
-                                    {{ $ligne_prop->ligne->code_complet }} - {{ $ligne_prop->ligne->nom }} (Dispo: {{ number_format($ligne_prop->montant, 2) }} DH)
+                                    {{ $ligne_prop->ligne->code_complet }} - {{ $ligne_prop->ligne->nom }} (Restant : {{ number_format($ligne_prop->montant_disponible, 2, ',', ' ') }} DH)
                                 </option>
                             @endforeach
                         </select>
