@@ -32,6 +32,10 @@ class LigneProposeeController extends Controller
         $emetteur = auth()->user()->emetteur;
         if (!$emetteur) return redirect()->route('emetteur.dashboard');
 
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé. Aucune nouvelle soumission possible.');
+        }
+
         // Can only propose on lines for the active budget of this emetteur
         $lignes = LigneBudgetaire::where('budget_id', $emetteur->budget_id)->get();
         return view('emetteur.ligne.create', compact('lignes'));
@@ -41,34 +45,42 @@ class LigneProposeeController extends Controller
     {
         $emetteur = auth()->user()->emetteur;
 
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé.');
+        }
+
         $validated = $request->validate([
-            'ligne_budgetaire_id' => 'required|exists:ligne_budgetaires,id',
-            'montant' => 'required|numeric|min:0.01',
+            'propositions' => 'required|array|min:1|max:10',
+            'propositions.*.ligne_budgetaire_id' => 'required|exists:ligne_budgetaires,id',
+            'propositions.*.description' => 'nullable|string|max:255',
+            'propositions.*.montant' => 'required|numeric|min:0.01',
         ]);
 
-        $exists = $emetteur->lignesProposees()
-            ->where('ligne_budgetaire_id', $validated['ligne_budgetaire_id'])
-            ->whereIn('statut', ['en_attente', 'approuve'])
-            ->exists();
+        $totalAProposer = collect($validated['propositions'])->sum('montant');
+        $reliquatDisponible = $emetteur->reliquat;
 
-        if ($exists) {
-            return back()->withInput()->withErrors(['ligne_budgetaire_id' => 'Une proposition pour cette ligne est déjà en attente ou approuvée.']);
+        if ($totalAProposer > $reliquatDisponible) {
+            return back()->withInput()->withErrors(['global' => 'Le montant total dépasse votre reliquat disponible.']);
         }
 
-        // Check reliquat
-        if ($validated['montant'] > $emetteur->reliquat) {
-            return back()->withInput()->withErrors(['montant' => 'Le montant dépasse votre reliquat disponible.']);
+        foreach ($validated['propositions'] as $prop) {
+            // Optional: check individual line status if user wants uniqueness per line category
+            // But usually research can have multiple items for the same category (e.g. 2 different laptops in 'petit materiel')
+            $emetteur->lignesProposees()->create($prop);
         }
 
-        $emetteur->lignesProposees()->create($validated);
-
-        return redirect()->route('emetteur.lignes.index')->with('success', 'Proposition soumise avec succès.');
+        return redirect()->route('emetteur.lignes.index')->with('success', count($validated['propositions']) . ' proposition(s) soumise(s) avec succès.');
     }
 
     public function edit(LigneBudgetProposee $ligne)
     {
-        if ($ligne->emetteur_id !== auth()->user()->emetteur->id) {
+        $emetteur = auth()->user()->emetteur;
+        if ($ligne->emetteur_id !== $emetteur->id) {
             abort(403);
+        }
+
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé. Modification impossible.');
         }
 
         if ($ligne->statut === 'approuve') {
@@ -87,8 +99,13 @@ class LigneProposeeController extends Controller
             abort(403);
         }
 
+        if ($emetteur->budget->is_closed) {
+            return redirect()->route('emetteur.lignes.index')->with('error', 'L\'exercice budgétaire est clôturé.');
+        }
+
         $validated = $request->validate([
             'ligne_budgetaire_id' => 'required|exists:ligne_budgetaires,id',
+            'description' => 'nullable|string|max:255',
             'montant' => 'required|numeric|min:0.01',
         ]);
 
@@ -108,13 +125,18 @@ class LigneProposeeController extends Controller
 
         $ligne->update($validated);
 
-        return redirect()->route('emetteur.lignes.index')->with('success', 'Proposition mise à jour et soumise.');
+        return redirect()->route('emetteur.lignes.index')->with('success', 'Proposition mise à jour.');
     }
 
     public function destroy(LigneBudgetProposee $ligne)
     {
-        if ($ligne->emetteur_id !== auth()->user()->emetteur->id || $ligne->statut === 'approuve') {
+        $emetteur = auth()->user()->emetteur;
+        if ($ligne->emetteur_id !== $emetteur->id || $ligne->statut === 'approuve') {
             abort(403);
+        }
+
+        if ($emetteur->budget->is_closed) {
+            return back()->with('error', 'L\'exercice budgétaire est clôturé.');
         }
 
         $ligne->delete();

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
             <h2 class="font-semibold text-xl text-slate-800 leading-tight">
-                {{ __('Détail Bon de Commande') }}
+                {{ __('Détail Expression de Besoins') }}
             </h2>
         </div>
     </x-slot>
@@ -16,23 +16,29 @@
                 </div>
             @endif
 
-            <div class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl border border-slate-100 mb-8 p-6 lg:p-8 flex flex-col md:flex-row justify-between">
                 <div>
-                    <h3 class="text-2xl font-bold mb-2 text-slate-800">{{ $engagement->commentaire ?? 'Aucun commentaire' }}</h3>
+                    <h3 class="text-2xl font-bold mb-2 text-slate-800">{{ $engagement->objet }}</h3>
                     <p class="text-slate-500 mb-6 text-sm">Émis par : <strong class="text-slate-700">{{ $engagement->emetteur?->user?->name ?? 'Inconnu' }}</strong> le {{ $engagement->created_at?->format('d/m/Y') ?? 'N/A' }}</p>
                     
-                    <div class="mb-4">
+                    <div class="mb-6">
                         <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Fournisseur</span>
                         <span class="font-medium text-slate-700 text-lg">{{ $engagement->fournisseur?->nom ?? 'Non défini' }}</span>
                     </div>
                     
-                    <div>
-                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Imputé sur la ligne</span>
+                    <div class="mb-6">
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Ligne Budgétaire</span>
                         <div class="inline-flex items-center">
                             <span class="font-mono text-xs bg-slate-50 border border-slate-200 text-slate-500 px-2 py-1 rounded-md">{{ $engagement->ligneProposee?->ligne?->code_complet ?? 'N/A' }}</span>
                             <span class="text-sm font-medium text-slate-700 ml-3">{{ $engagement->ligneProposee?->ligne?->nom ?? 'N/A' }}</span>
                         </div>
                     </div>
+
+                    @if($engagement->ligneProposee?->description)
+                        <div class="bg-indigo-50/50 rounded-2xl p-4 border border-indigo-100/50">
+                            <span class="text-[10px] uppercase tracking-wider text-indigo-400 font-bold block mb-2">Description de la proposition</span>
+                            <p class="text-sm text-slate-600 italic leading-relaxed">"{{ $engagement->ligneProposee->description }}"</p>
+                        </div>
+                    @endif
                 </div>
                 
                 <div class="mt-8 md:mt-0 md:text-right flex flex-col justify-between">
@@ -45,11 +51,11 @@
                     </div>
                     
                     <div class="mt-8 border-t border-slate-100 pt-6">
-                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">TVA Globale</span>
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">TVA</span>
                         <span class="text-lg font-bold text-slate-700">{{ $engagement->tva }} %</span>
-                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mt-4 mb-1">Montant Total HT</span>
+                        <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mt-4 mb-1">Total HT</span>
                         <span class="text-xl font-bold text-slate-800">{{ number_format($engagement->total_ht, 2, ',', ' ') }} DH</span>
-                        <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold block mt-4 mb-1">Montant Total TTC Estimé</span>
+                        <span class="text-xs uppercase tracking-wider text-indigo-400 font-semibold block mt-4 mb-1">Total TTC</span>
                         <span class="text-4xl font-extrabold text-indigo-600 tracking-tight">{{ number_format($engagement->total_ttc, 2, ',', ' ') }} <small class="text-lg text-indigo-400 font-semibold">DH</small></span>
                     </div>
                 </div>
@@ -57,34 +63,34 @@
 
             <div class="bg-white shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl border border-slate-100 overflow-hidden mb-8">
                 <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Articles & Besoins liés</h3>
+                    <h3 class="font-bold text-slate-800 tracking-tight">Détails des Besoins</h3>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 font-semibold border-b border-slate-100">
-                                <th class="p-4">Intitulé de l'article</th>
+                            <tr class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 font-bold border-b border-slate-100">
+                                <th class="p-4">Article / Description</th>
                                 <th class="p-4 text-center">Qté</th>
-                                <th class="p-4 text-right">PU HT (DH)</th>
-                                <th class="p-4 text-right">Total HT (DH)</th>
+                                <th class="p-4 text-right">PU HT</th>
+                                <th class="p-4 text-right">Total HT</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-slate-100">
                             @forelse($engagement->besoins as $besoin)
-                                <tr class="border-b border-slate-100 hover:bg-slate-50 transition duration-150">
+                                <tr class="hover:bg-slate-50/50 transition duration-150">
                                     <td class="p-4">
-                                        <div class="font-semibold text-slate-800">{{ $besoin->intitule }}</div>
+                                        <div class="font-bold text-slate-800">{{ $besoin->intitule }}</div>
                                         @if($besoin->description)
-                                            <div class="text-xs text-slate-500 mt-1">{{ $besoin->description }}</div>
+                                            <div class="text-xs text-slate-400 mt-1 italic">{{ $besoin->description }}</div>
                                         @endif
                                     </td>
-                                    <td class="p-4 text-center text-slate-700">{{ $besoin->quantite }}</td>
-                                    <td class="p-4 text-right text-slate-600">{{ number_format($besoin->prix_unitaire, 2, ',', ' ') }}</td>
-                                    <td class="p-4 text-right font-bold text-indigo-600">{{ number_format($besoin->montant, 2, ',', ' ') }}</td>
+                                    <td class="p-4 text-center text-slate-700 font-medium">{{ $besoin->quantite }}</td>
+                                    <td class="p-4 text-right text-slate-600 font-mono text-sm">{{ number_format($besoin->prix_unitaire, 2, ',', ' ') }}</td>
+                                    <td class="p-4 text-right font-bold text-indigo-600 font-mono text-sm">{{ number_format($besoin->montant, 2, ',', ' ') }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-8 text-center text-slate-500 font-medium italic">Aucun article dans ce bon de commande.</td>
+                                    <td colspan="4" class="p-12 text-center text-slate-400 font-medium italic">Aucun besoin listé.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -93,28 +99,28 @@
             </div>
 
             @if($engagement->statut === 'en_attente')
-                <div class="bg-white shadow-sm rounded-2xl border border-indigo-100 mb-8 p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
-                    <div class="absolute inset-y-0 left-0 w-1 bg-indigo-500"></div>
-                    <div>
-                        <h4 class="font-bold text-slate-800 text-lg mb-1">Décision d'administration</h4>
-                        <p class="text-sm text-slate-500">Veuillez examiner ce bon de commande avant de l'approuver ou de le rejeter.</p>
+                <div class="bg-white shadow-sm rounded-3xl border border-indigo-100 mb-8 p-6 lg:p-8 flex flex-col md:flex-row items-center justify-between relative overflow-hidden" x-data="{ openReject: false }">
+                    <div class="absolute inset-y-0 left-0 w-2 bg-indigo-500"></div>
+                    <div class="mb-6 md:mb-0">
+                        <h4 class="font-bold text-slate-800 text-xl mb-1">Action requise</h4>
+                        <p class="text-sm text-slate-500 font-medium">Révision finale de l'expression de besoins.</p>
                     </div>
                     
-                    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-6 md:mt-0 w-full md:w-auto">
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                         <form action="{{ route('admin.engagements.approve', $engagement->id) }}" method="POST" class="w-full sm:w-auto">
                             @csrf
-                            <button type="submit" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-6 rounded-xl transition duration-300 shadow-sm" onclick="return confirm('Confirmer l\'approbation de ce BC ?');">
-                                Approuver le BC
+                            <button type="submit" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-8 rounded-2xl transition duration-300 shadow-lg shadow-emerald-200" onclick="return confirm('Approuver cette expression de besoins ?');">
+                                Approuver
                             </button>
                         </form>
                         
-                        <button @click="$dispatch('open-modal-reject', { id: '{{ $engagement->id }}' })" class="w-full sm:w-auto bg-rose-50 text-rose-700 hover:bg-rose-100 font-semibold py-2.5 px-6 rounded-xl transition duration-300">
+                        <button @click="$dispatch('open-modal-reject', { id: '{{ $engagement->id }}' })" class="w-full sm:w-auto bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold py-3 px-8 rounded-2xl transition duration-300">
                             Rejeter
                         </button>
                     </div>
-                </div>
 
-                <x-modal-reject :id="$engagement->id" :route="route('admin.engagements.reject', $engagement->id)" title="Rejeter le bon de commande" />
+                    <x-modal-reject :id="$engagement->id" :route="route('admin.engagements.reject', $engagement->id)" title="Rejeter l'expression de besoins" />
+                </div>
             @endif
 
             <div class="mt-8 flex items-center justify-between">

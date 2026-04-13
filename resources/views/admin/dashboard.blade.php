@@ -23,7 +23,7 @@
                     <div class="text-3xl font-extrabold text-slate-900">{{ $stats['propositions_attente'] }}</div>
                 </div>
                 <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 flex flex-col justify-center border border-slate-100">
-                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Engagements en attente</div>
+                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Expressions de besoins en attente</div>
                     <div class="text-3xl font-extrabold text-slate-900">{{ $stats['engagements_attente'] }}</div>
                 </div>
             </div>
@@ -52,8 +52,8 @@
                                 <span class="text-sm text-slate-500 font-medium">Budget annuel total</span>
                                 <span class="text-sm font-bold text-slate-900">{{ $budgetActif ? number_format($budgetActif->total, 0, ',', ' ') . ' DH' : '—' }}</span>
                             </div>
-                            <div class="flex items-center justify-between py-3 border-b border-slate-100">
-                                <span class="text-sm text-slate-500 font-medium">Total engagé (approuvé)</span>
+                             <div class="flex items-center justify-between py-3 border-b border-slate-100">
+                                <span class="text-sm text-slate-500 font-medium">Total déduit (EB approuvés)</span>
                                 <span class="text-sm font-bold text-emerald-600">{{ number_format($totalEngage, 0, ',', ' ') }} DH</span>
                             </div>
                             <div class="flex items-center justify-between py-3 border-b border-slate-100">

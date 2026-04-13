@@ -5,14 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class LigneBudgetProposee extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'ligne_budgetaire_id',
         'emetteur_id',
+        'description',
         'montant',
         'statut',
         'motif_refus',
@@ -25,6 +28,14 @@ class LigneBudgetProposee extends Model
         'nb_refus' => 'integer',
         'validated_at' => 'datetime',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['montant', 'statut', 'motif_refus'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function ligne(): BelongsTo
     {

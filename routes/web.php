@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EmetteurController;
 use App\Http\Controllers\Admin\EngagementController as AdminEngagementController;
 use App\Http\Controllers\Admin\LigneBudgetaireController;
 use App\Http\Controllers\Admin\PropositionController;
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Emetteur\DashboardController as EmetteurDashboardController;
 use App\Http\Controllers\Emetteur\EngagementController as EmetteurEngagementController;
 use App\Http\Controllers\Emetteur\LigneProposeeController;
@@ -31,6 +32,7 @@ Route::middleware('auth')->group(function () {
     // Admin Routes
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/audit-log', [AuditLogController::class, 'index'])->name('audit-log');
         
         Route::resource('budgets', BudgetController::class);
         Route::resource('budgets.lignes', LigneBudgetaireController::class)->except(['show']);
@@ -38,10 +40,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/emetteurs/{emetteur}/reset-password', [EmetteurController::class, 'resetPassword'])->name('emetteurs.reset-password');
         
         Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions.index');
+        Route::get('/propositions/export/excel', [PropositionController::class, 'exportExcel'])->name('propositions.export.excel');
+        Route::get('/propositions/export/pdf', [PropositionController::class, 'exportPdf'])->name('propositions.export.pdf');
         Route::post('/propositions/{id}/approve', [PropositionController::class, 'approve'])->name('propositions.approve');
         Route::post('/propositions/{id}/reject', [PropositionController::class, 'reject'])->name('propositions.reject');
         
         Route::get('/engagements', [AdminEngagementController::class, 'index'])->name('engagements.index');
+        Route::get('/engagements/export/excel', [AdminEngagementController::class, 'exportExcel'])->name('engagements.export.excel');
+        Route::get('/engagements/export/pdf', [AdminEngagementController::class, 'exportPdf'])->name('engagements.export.pdf');
         Route::get('/engagements/{id}', [AdminEngagementController::class, 'show'])->name('engagements.show');
         Route::post('/engagements/{id}/approve', [AdminEngagementController::class, 'approve'])->name('engagements.approve');
         Route::post('/engagements/{id}/reject', [AdminEngagementController::class, 'reject'])->name('engagements.reject');
