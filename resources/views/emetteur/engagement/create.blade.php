@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Initialiser un Bon de Commande') }}
+            {{ __('Initialiser une Expression de Besoins') }}
         </h2>
     </x-slot>
 
@@ -21,7 +21,7 @@
             @if($lignesApprouvees->isEmpty())
                 <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6">
                     <p class="text-yellow-700 font-bold">Vous n'avez aucune ligne budgétaire approuvée.</p>
-                    <p class="text-sm mt-1">Vous devez d'abord obtenir l'approbation d'une proposition budgétaire par l'administration avant de pouvoir saisir un bon de commande.</p>
+                    <p class="text-sm mt-1">Vous devez d'abord obtenir l'approbation d'une proposition budgétaire par l'administration avant de pouvoir saisir une expression de besoins.</p>
                 </div>
             @else
 
@@ -112,7 +112,7 @@
                     <div class="flex items-center justify-end space-x-4 border-t pt-6">
                         <a href="{{ route('emetteur.engagements.index') }}" class="text-gray-500 hover:text-gray-800 font-medium transition">Annuler</a>
                         <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-200 uppercase tracking-widest text-xs">
-                            Soumettre le bon de commande
+                            Soumettre l'expression de besoins
                         </button>
                     </div>
                 </form>

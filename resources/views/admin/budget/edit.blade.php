@@ -25,10 +25,17 @@
                         @error('saison') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
-                    <div class="mb-6">
+                    <div class="mb-4">
                         <label for="total" class="block text-gray-700 text-sm font-bold mb-2">Total Alloué (DH) :</label>
                         <input type="number" step="0.01" name="total" id="total" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('total', $budget->total) }}" required>
                         @error('total') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="date_limite" class="block text-gray-700 text-sm font-bold mb-2">Date Limite de Soumission (Optionnel) :</label>
+                        <input type="date" name="date_limite" id="date_limite" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('date_limite', optional($budget->date_limite)->format('Y-m-d')) }}">
+                        <p class="text-gray-500 text-xs mt-1">Au-delà de cette date, les émetteurs ne pourront plus soumettre de propositions.</p>
+                        @error('date_limite') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="flex items-center justify-end">

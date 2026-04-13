@@ -4,20 +4,58 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LigneBudgetProposee;
+use App\Models\Budget;
+use App\Exports\PropositionsExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Notifications\PropositionStatusNotification;
 
 class PropositionController extends Controller
 {
     public function index(Request $request)
     {
         $status = $request->get('statut', 'en_attente');
+        $saison = $request->get('saison', '');
         
-        $propositions = LigneBudgetProposee::with(['emetteur.user', 'ligne.budget'])
-            ->where('statut', '=', $status)
-            ->latest()
-            ->get();
+        $saisons = Budget::select('saison')->distinct()->orderBy('saison', 'desc')->pluck('saison');
+
+        $query = LigneBudgetProposee::with(['emetteur.user', 'ligne.budget'])
+            ->where('statut', '=', $status);
+
+        if ($saison) {
+            $query->whereHas('ligne.budget', function ($q) use ($saison) {
+                $q->where('saison', $saison);
+            });
+        }
+
+        $propositions = $query->latest()->get();
             
-        return view('admin.proposition.index', compact('propositions', 'status'));
+        return view('admin.proposition.index', compact('propositions', 'status', 'saisons', 'saison'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $status = $request->get('statut');
+        $saison = $request->get('saison');
+
+        $filename = 'propositions_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.xlsx';
+        return (new PropositionsExport($saison, $status))->download($filename);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $status = $request->get('statut');
+        $saison = $request->get('saison');
+
+        // Reuse the logic from PropositionsExport to get the same formatted collection
+        $export = new PropositionsExport($saison, $status);
+        $propositions = $export->collection();
+
+        $pdf = Pdf::loadView('pdf.propositions_export', compact('propositions', 'status', 'saison'))
+            ->setPaper('a4', 'landscape');
+
+        $filename = 'propositions_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.pdf';
+        return $pdf->download($filename);
     }
 
     public function approve($id)
@@ -41,6 +79,8 @@ class PropositionController extends Controller
             'validated_at' => now(),
         ]);
         
+        $proposition->emetteur->user->notify(new PropositionStatusNotification($proposition));
+        
         return back()->with('success', 'Proposition approuvée avec succès.');
     }
 
@@ -62,6 +102,8 @@ class PropositionController extends Controller
         ]);
         
         $proposition->increment('nb_refus');
+        
+        $proposition->emetteur->user->notify(new PropositionStatusNotification($proposition));
         
         return back()->with('success', 'Proposition rejetée.');
     }

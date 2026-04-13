@@ -1,82 +1,87 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Modifier une Proposition Budgétaire') }}
-        </h2>
-    </x-slot>
-
-    <div class="py-12">
-        <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            
-            @if($errors->any())
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                    <ul class="list-disc list-inside text-sm">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            @if($ligne->statut === 'rejete')
-                <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
-                    <h3 class="font-bold text-red-800">Motif du précédent rejet :</h3>
-                    <p class="text-red-700 italic mt-1">{{ $ligne->motif_refus }}</p>
-                    <p class="text-sm text-gray-600 mt-2">En modifiant et soumettant à nouveau cette proposition, elle repassera en attente d'approbation d'administration.</p>
-                </div>
-            @endif
+    <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <div class="mb-10 flex items-end justify-between">
+            <div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Modifier l'Expression de Besoins</h1>
+                <p class="mt-2 text-slate-500 font-medium italic">Ajustez les détails de votre proposition.</p>
+            </div>
             
             @php
-                // Reliquat hors de la proposition actuelle
                 $reliquatSansLigne = auth()->user()->emetteur->dotation - auth()->user()->emetteur->lignesProposees()
                     ->where('id', '!=', $ligne->id)
                     ->whereIn('statut', ['en_attente', 'approuve'])
                     ->sum('montant');
             @endphp
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6 p-6 border-l-4 border-blue-500">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-gray-500 text-sm font-semibold uppercase">Votre Reliquat Maximal Théorique</h3>
-                        <p class="text-sm text-gray-500 mt-1">Si vous annulez cette proposition, voici ce qui serait disponible.</p>
+            <div class="bg-indigo-50 px-6 py-3 rounded-2xl border border-indigo-100/50 text-right">
+                <span class="block text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">Capacité maximale</span>
+                <span class="text-xl font-black text-indigo-600 tracking-tight">{{ number_format($reliquatSansLigne, 2, ',', ' ') }} <span class="text-sm">DH</span></span>
+            </div>
+        </div>
+
+        @if($ligne->statut === 'rejete')
+            <div class="mb-8 bg-white border border-red-100 rounded-3xl p-6 shadow-xl shadow-red-900/5 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                    <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <h3 class="font-black text-red-600 uppercase tracking-widest text-[11px] mb-2">Motif du rejet précédent</h3>
+                <p class="text-slate-700 italic font-medium leading-relaxed">{{ $ligne->motif_refus }}</p>
+                <p class="mt-4 text-[11px] text-slate-400 font-bold uppercase tracking-widest">Une nouvelle soumission réinitialisera l'attente d'approbation</p>
+            </div>
+        @endif
+
+        <form action="{{ route('emetteur.lignes.update', $ligne) }}" method="POST" class="space-y-8">
+            @csrf
+            @method('PUT')
+
+            <div class="bg-white shadow-2xl shadow-slate-200/60 rounded-[2.5rem] border border-slate-100 p-10 space-y-8">
+                
+                {{-- Ligne --}}
+                <div class="space-y-3">
+                    <label for="ligne_budgetaire_id" class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Catégorie Budgétaire</label>
+                    <select name="ligne_budgetaire_id" id="ligne_budgetaire_id" required
+                        class="block w-full rounded-2xl border-slate-200 bg-slate-50 text-[15px] font-medium text-slate-700 focus:border-indigo-500 focus:ring-indigo-500 transition-all p-4 shadow-sm">
+                        @foreach($lignes as $l)
+                            <option value="{{ $l->id }}" {{ old('ligne_budgetaire_id', $ligne->ligne_budgetaire_id) == $l->id ? 'selected' : '' }}>
+                                {{ $l->code_complet }} - {{ $l->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Description --}}
+                <div class="space-y-3">
+                    <label for="description" class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Description détaillée</label>
+                    <textarea name="description" id="description" rows="3"
+                        placeholder="Précisez votre besoin (ex: Matériel informatique, consommables...)"
+                        class="block w-full rounded-2xl border-slate-200 bg-slate-50 text-[15px] text-slate-600 focus:border-indigo-500 focus:ring-indigo-500 transition-all p-4 shadow-sm resize-none">{{ old('description', $ligne->description) }}</textarea>
+                </div>
+
+                {{-- Montant --}}
+                <div class="space-y-3">
+                    <label for="montant" class="block text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Montant souhaité</label>
+                    <div class="relative">
+                        <input type="number" step="0.01" name="montant" id="montant" value="{{ old('montant', $ligne->montant) }}" required
+                            class="block w-full rounded-[1.5rem] border-slate-200 bg-slate-50 text-[18px] font-black text-indigo-600 focus:border-indigo-500 focus:ring-indigo-500 transition-all p-5 shadow-sm"
+                            placeholder="0.00">
+                        <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400 font-black text-xs uppercase tracking-widest">
+                            MAD
+                        </div>
                     </div>
-                    <div class="text-3xl font-bold text-blue-600">{{ number_format($reliquatSansLigne, 2, ',', ' ') }} DH</div>
+                    <x-input-error :messages="$errors->get('montant')" />
                 </div>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                
-                <form action="{{ route('emetteur.lignes.update', $ligne) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    
-                    <div class="mb-6">
-                        <label for="ligne_budgetaire_id" class="block text-gray-700 text-sm font-bold mb-2">Ligne Budgétaire cible :</label>
-                        <select name="ligne_budgetaire_id" id="ligne_budgetaire_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                            @foreach($lignes as $l)
-                                <option value="{{ $l->id }}" {{ old('ligne_budgetaire_id', $ligne->ligne_budgetaire_id) == $l->id ? 'selected' : '' }}>
-                                    {{ $l->code_complet }} - {{ $l->nom }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="mb-6">
-                        <label for="montant" class="block text-gray-700 text-sm font-bold mb-2">Montant proposé (DH) :</label>
-                        <input type="number" step="0.01" name="montant" id="montant" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" value="{{ old('montant', $ligne->montant) }}" required max="{{ $reliquatSansLigne }}">
-                    </div>
-
-
-
-                    <div class="flex items-center justify-end">
-                        <a href="{{ route('emetteur.lignes.index') }}" class="text-gray-600 hover:text-gray-900 mr-4">Annuler</a>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                            Mettre à jour la proposition
-                        </button>
-                    </div>
-                </form>
-
+            <div class="flex items-center justify-between pt-6 px-4">
+                <a href="{{ route('emetteur.lignes.index') }}" class="text-xs font-black text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-[0.2em]">
+                    Abandonner
+                </a>
+                <button type="submit"
+                    class="group inline-flex items-center gap-4 bg-indigo-600 text-white font-black px-12 py-5 rounded-[2rem] shadow-2xl shadow-indigo-200 hover:bg-indigo-700 transition-all hover:-translate-y-1 uppercase tracking-[0.15em] text-xs">
+                    Mettre à jour
+                    <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 </x-app-layout>

@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Engagement extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $fillable = [
         'ligne_proposee_id',
@@ -23,6 +25,14 @@ class Engagement extends Model
         'statut',
         'motif_refus',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['statut', 'total_ht', 'total_ttc', 'motif_refus'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
     public function emetteur(): BelongsTo
     {
@@ -44,7 +54,7 @@ class Engagement extends Model
         return $this->hasMany(Besoin::class);
     }
 
-    /** Total du bon de commande (stocké en base) */
+    /** Total de l'expression de besoins (stocké en base) */
     public function getMontantTotalAttribute(): float
     {
         return (float) $this->total_ttc;
