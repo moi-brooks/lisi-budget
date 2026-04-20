@@ -32,7 +32,7 @@
             @endisset
 
             {{-- Bannière changement mot de passe --}}
-            @if(auth()->check() && auth()->user()->must_change_password)
+            @if(auth()->check() && auth()->user()->must_change_password && auth()->user()->role === 'emetteur')
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
                     <div class="bg-amber-50 border border-amber-300 rounded-2xl overflow-hidden">
                         <div class="flex items-center space-x-3 bg-gradient-to-r from-amber-400 to-orange-400 px-5 py-3">
