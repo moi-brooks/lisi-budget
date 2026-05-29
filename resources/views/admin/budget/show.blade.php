@@ -64,11 +64,11 @@
                    class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow transition">
                     Gérer les rubriques
                 </a>
-                <a href="{{ route('exports.besoins', $budget) }}"
+                <a href="{{ route('admin.exports.besoins', $budget) }}"
                    class="inline-flex items-center px-5 py-2.5 bg-slate-700 hover:bg-slate-800 text-white text-sm font-semibold rounded-xl shadow transition">
                     Exporter DOCX (Expression des besoins)
                 </a>
-                <a href="{{ route('exports.excel', $budget) }}"
+                <a href="{{ route('admin.exports.excel', $budget) }}"
                    class="inline-flex items-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl shadow transition">
                     Exporter Excel
                 </a>

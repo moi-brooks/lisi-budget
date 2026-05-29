@@ -1,4 +1,4 @@
-﻿<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Initialiser une Expression de Besoins') }}
@@ -33,10 +33,10 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6"
                  x-data="{
-                    ligneId: '{{ old(`ligne_proposee_id`, request(`ligne_id`, ``)) }}',
-                    lignesData: {{ json_encode($lignesApprouvees->map(fn($l) => [`id` => $l->id, `montant` => (float)$l->montant_disponible])->keyBy(`id`)) }},
-                    articles: [{ intitule: ``, description: ``, quantite: `1`, prix_unitaire: `` }],
-                    tva: `{{ old(`tva`, 20) }}`,
+                    ligneId: '{{ old('ligne_proposee_id', request('ligne_id', '')) }}',
+                    lignesData: {{ json_encode($lignesApprouvees->map(fn($l) => ['id' => $l->id, 'montant' => (float)$l->montant_disponible])->keyBy('id')) }},
+                    articles: [{ intitule: '', description: '', quantite: '1', prix_unitaire: '' }],
+                    tva: '{{ old('tva', 20) }}',
                     get totalHT() {
                         return this.articles.reduce((s, a) => {
                             const q = parseFloat(a.quantite) || 0;
@@ -58,17 +58,17 @@
                         return this.totalTTC > this.montantDispo;
                     },
                     addArticle() {
-                        this.articles.push({ intitule: ``, description: ``, quantite: `1`, prix_unitaire: `` });
+                        this.articles.push({ intitule: '', description: '', quantite: '1', prix_unitaire: '' });
                     },
                     removeArticle(i) {
                         if (this.articles.length > 1) this.articles.splice(i, 1);
                     },
                     formatNum(n) {
-                        return new Intl.NumberFormat(`fr-FR`, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
+                        return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n);
                     }
                  }">
 
-                <form action="{{ route(`emetteur.engagements.store`) }}" method="POST"
+                <form action="{{ route('emetteur.engagements.store') }}" method="POST"
                       @submit="if(depasse) { $event.preventDefault(); }">
                     @csrf
 
@@ -80,9 +80,9 @@
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                             <option value="">-- Sélectionner une ligne approuvée --</option>
                             @foreach($lignesApprouvees as $ligne_prop)
-                                <option value="{{ $ligne_prop->id }}" {{ old(`ligne_proposee_id`, request(`ligne_id`)) == $ligne_prop->id ? `selected` : `` }}>
+                                <option value="{{ $ligne_prop->id }}" {{ old('ligne_proposee_id', request('ligne_id')) == $ligne_prop->id ? 'selected' : '' }}>
                                     {{ $ligne_prop->ligne->code_complet }} — {{ $ligne_prop->ligne->nom }}
-                                    (Restant : {{ number_format($ligne_prop->montant_disponible, 2, `,`, ` `) }} DH)
+                                    (Restant : {{ number_format($ligne_prop->montant_disponible, 2, ',', ' ') }} DH)
                                 </option>
                             @endforeach
                         </select>
@@ -102,7 +102,7 @@
                                         class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                     <option value="">-- Non défini / En attente --</option>
                                     @foreach($fournisseurs as $fournisseur)
-                                        <option value="{{ $fournisseur->id }}" {{ old(`fournisseur_id`) == $fournisseur->id ? `selected` : `` }}>
+                                        <option value="{{ $fournisseur->id }}" {{ old('fournisseur_id') == $fournisseur->id ? 'selected' : '' }}>
                                             {{ $fournisseur->nom }}
                                         </option>
                                     @endforeach
@@ -113,7 +113,7 @@
                             <label for="date" class="block text-gray-700 text-sm font-bold mb-2">Date de la commande :</label>
                             <input type="date" name="date" id="date"
                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                   value="{{ old(`date`, date(`Y-m-d`)) }}" required>
+                                   value="{{ old('date', date('Y-m-d')) }}" required>
                         </div>
                     </div>
 
@@ -122,13 +122,13 @@
                             <label for="commentaire" class="block text-gray-700 text-sm font-bold mb-2">Commentaire :</label>
                             <input type="text" name="commentaire" id="commentaire"
                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                   value="{{ old(`commentaire`) }}" placeholder="Optionnel...">
+                                   value="{{ old('commentaire') }}" placeholder="Optionnel...">
                         </div>
                         <div>
                             <label for="tva" class="block text-gray-700 text-sm font-bold mb-2">TVA Globale (%) :</label>
                             <input type="text" inputmode="decimal" name="tva" id="tva" x-model="tva"
                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                   value="{{ old(`tva`, 20) }}" required>
+                                   value="{{ old('tva', 20) }}" required>
                         </div>
                     </div>
 
@@ -139,24 +139,24 @@
                         <div class="flex space-x-2 mb-2 border-b pb-2">
                             <div class="flex-grow">
                                 <label class="block text-[10px] text-gray-400 uppercase font-bold">Intitulé</label>
-                                <input type="text" :name="`intitule[]`" x-model="article.intitule"
+                                <input type="text" :name="'intitule[]'" x-model="article.intitule"
                                        placeholder="Ex: Ramettes papier"
                                        class="shadow-sm border border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700" required>
                             </div>
                             <div class="flex-grow">
                                 <label class="block text-[10px] text-gray-400 uppercase font-bold">Description</label>
-                                <input type="text" :name="`description[]`" x-model="article.description"
+                                <input type="text" :name="'description[]'" x-model="article.description"
                                        placeholder="Détails..."
                                        class="shadow-sm border border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700">
                             </div>
                             <div class="w-24">
                                 <label class="block text-[10px] text-gray-400 uppercase font-bold">Qté</label>
-                                <input type="text" inputmode="numeric" :name="`quantite[]`" x-model="article.quantite"
+                                <input type="text" inputmode="numeric" :name="'quantite[]'" x-model="article.quantite"
                                        class="shadow-sm border border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700" required>
                             </div>
                             <div class="w-32">
                                 <label class="block text-[10px] text-gray-400 uppercase font-bold">PU HT (DH)</label>
-                                <input type="text" inputmode="decimal" :name="`prix_unitaire[]`" x-model="article.prix_unitaire"
+                                <input type="text" inputmode="decimal" :name="'prix_unitaire[]'" x-model="article.prix_unitaire"
                                        placeholder="0.00"
                                        class="shadow-sm border border-gray-300 rounded w-full py-2 px-3 text-sm text-gray-700" required>
                             </div>
@@ -193,10 +193,10 @@
                     </div>
 
                     <div class="flex items-center justify-end space-x-4 border-t pt-6">
-                        <a href="{{ route(`emetteur.engagements.index`) }}" class="text-gray-500 hover:text-gray-800 font-medium transition">Annuler</a>
+                        <a href="{{ route('emetteur.engagements.index') }}" class="text-gray-500 hover:text-gray-800 font-medium transition">Annuler</a>
                         <button type="submit"
                                 :disabled="depasse"
-                                :class="depasse ? `bg-gray-400 cursor-not-allowed` : `bg-indigo-600 hover:bg-indigo-700`"
+                                :class="depasse ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'"
                                 class="text-white font-bold py-3 px-10 rounded-lg shadow-lg transform transition active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-200 uppercase tracking-widest text-sm">
                             ENGAGER
                         </button>
