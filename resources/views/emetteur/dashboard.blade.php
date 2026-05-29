@@ -5,33 +5,45 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12" x-data="{}" x-init="
+        setInterval(() => {
+            fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(r => r.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newCards = doc.getElementById('status-cards');
+                    const curCards = document.getElementById('status-cards');
+                    if (newCards && curCards) curCards.innerHTML = newCards.innerHTML;
+                });
+        }, 30000);
+    ">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 mb-8 border border-slate-100">
                 <h3 class="text-2xl font-bold text-slate-900 mb-2">Bienvenue {{ $emetteur->user->name }}</h3>
-                <p class="text-slate-500">Saison budgétaire active : <strong class="text-slate-800">{{ $emetteur->budget->saison }}</strong></p>
+                <p class="text-slate-500">Année budgétaire active : <strong class="text-slate-800">{{ $emetteur->budget->annee }}</strong></p>
             </div>
 
             <!-- Budget Gauge -->
             @php
-                $engagedTotal = $stats['montant_approuve'] + $stats['montant_attente'];
+                $engagedTotal = $stats['montant_approuve'];
                 $percent = $stats['dotation'] > 0 ? ($engagedTotal / $stats['dotation']) * 100 : 0;
-                $percent = min($percent, 100); // Caps at 100% visually
+                $percent = min($percent, 100);
                 $color = $percent < 70 ? 'bg-green-500' : ($percent < 90 ? 'bg-orange-500' : 'bg-red-500');
             @endphp
             <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 mb-8 border border-slate-100">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">Utilisation du Budget (Total Engagé)</h3>
+                    <h3 class="text-lg font-bold text-slate-900">Utilisation de la dotation annuelle</h3>
                     <span class="text-sm font-bold {{ str_replace('bg-', 'text-', $color) }}">{{ number_format($percent, 1) }}%</span>
                 </div>
                 <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
                     <div class="{{ $color }} h-3 rounded-full transition-all duration-1000" style="width: {{ $percent }}%"></div>
                 </div>
                 <div class="flex justify-between text-xs text-slate-500 mt-4 font-medium uppercase tracking-wider">
-                    <span>Dotation : <span class="text-slate-800 font-bold">{{ number_format($stats['dotation'], 2, ',', ' ') }} DH</span></span>
-                    <span>Déjà Engagé : <span class="text-slate-800 font-bold">{{ number_format($engagedTotal, 2, ',', ' ') }} DH</span></span>
-                    <span>Reliquat Réel : <span class="text-slate-800 font-bold">{{ number_format($stats['reliquat'], 2, ',', ' ') }} DH</span></span>
+                    <span>Dotation annuelle : <span class="text-slate-800 font-bold">{{ number_format($stats['dotation'], 2, ',', ' ') }} DH</span></span>
+                    <span>Budget validé : <span class="text-emerald-600 font-bold">{{ number_format($stats['montant_approuve'], 2, ',', ' ') }} DH</span></span>
+                    <span>Reliquat : <span class="text-slate-800 font-bold">{{ number_format($stats['reliquat'], 2, ',', ' ') }} DH</span></span>
                 </div>
             </div>
 
@@ -51,31 +63,44 @@
                 </div>
             @endif
 
-            <!-- Cards Section -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <!-- Status Cards — auto-refreshed via Alpine polling -->
+            <div id="status-cards" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 border border-slate-100">
-                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Ma Dotation</div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span>
+                        <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase">Dotation annuelle</div>
+                    </div>
                     <div class="text-2xl font-extrabold text-indigo-600">{{ number_format($stats['dotation'], 2, ',', ' ') }} <small class="text-xs font-semibold text-slate-400">DH</small></div>
                 </div>
-                
+
                 <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 border border-slate-100">
-                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Consommé (Approuvé)</div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase">Budget validé</div>
+                    </div>
                     <div class="text-2xl font-extrabold text-emerald-600">{{ number_format($stats['montant_approuve'], 2, ',', ' ') }} <small class="text-xs font-semibold text-slate-400">DH</small></div>
                 </div>
 
-                <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 border border-slate-100">
-                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">En attente (Bloqué)</div>
-                    <div class="text-2xl font-extrabold text-amber-500">{{ number_format($stats['montant_attente'], 2, ',', ' ') }} <small class="text-xs font-semibold text-slate-400">DH</small></div>
-                </div>
-
                 <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 border border-slate-100 bg-slate-50/50">
-                    <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase mb-1">Reliquat Disponible</div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="w-3 h-3 rounded-full bg-slate-400 inline-block"></span>
+                        <div class="text-slate-500 text-xs font-semibold tracking-wider uppercase">Reliquat Disponible</div>
+                    </div>
                     <div class="text-2xl font-extrabold {{ $stats['reliquat'] <= 0 ? 'text-rose-500' : 'text-slate-800' }}">{{ number_format($stats['reliquat'], 2, ',', ' ') }} <small class="text-xs font-semibold text-slate-400">DH</small></div>
                 </div>
             </div>
 
+            <!-- Status Legend #16 -->
+            <div class="bg-white rounded-2xl border border-slate-100 px-6 py-4 mb-8 flex items-center gap-6 flex-wrap shadow-sm">
+                <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Légende :</span>
+                <span class="flex items-center gap-1.5 text-xs text-slate-700 font-medium"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Approuvé</span>
+                <span class="flex items-center gap-1.5 text-xs text-slate-700 font-medium"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Rejeté</span>
+                <span class="flex items-center gap-1.5 text-xs text-slate-700 font-medium"><span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span> En attente</span>
+                <span class="ml-auto text-xs text-slate-400 italic">Statuts mis à jour automatiquement toutes les 30s</span>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Propositions Actions -->
+                <!-- Propositions -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 border border-slate-100 flex flex-col">
                     <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center justify-between">
                         <span>Mes Propositions de Répartition</span>
@@ -88,16 +113,21 @@
                     </div>
                 </div>
 
-                <!-- Engagements Actions -->
+                <!-- Engagements -->
                 <div class="bg-white overflow-hidden shadow-sm rounded-2xl p-8 border border-slate-100 flex flex-col">
                     <h3 class="font-bold text-lg text-slate-900 mb-4 flex items-center justify-between">
                         <span>Mes Expressions de Besoins</span>
                         <span class="bg-violet-50 text-violet-600 text-xs font-bold px-3 py-1 rounded-full">{{ $stats['engagements_count'] }}</span>
                     </h3>
-                    <p class="text-slate-500 text-sm mb-8 flex-grow">Saisissez vos expressions de besoins sur vos lignes budgétaires approuvées.</p>
-                    <div class="flex space-x-3 mt-auto">
-                        <a href="{{ route('emetteur.engagements.create') }}" class="flex-1 text-center bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">Initialiser EB</a>
-                        <a href="{{ route('emetteur.engagements.index') }}" class="flex-1 text-center bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">Voir la liste</a>
+                    <p class="text-slate-500 text-sm mb-4 flex-grow">Saisissez vos expressions de besoins sur vos lignes budgétaires approuvées.</p>
+                    <div class="flex flex-col gap-3 mt-auto">
+                        <div class="flex space-x-3">
+                            <a href="{{ route('emetteur.engagements.create') }}" class="flex-1 text-center bg-violet-600 hover:bg-violet-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">ENGAGER</a>
+                            <a href="{{ route('emetteur.engagements.index') }}" class="flex-1 text-center bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">Voir la liste</a>
+                        </div>
+                        <a href="{{ route('emetteur.export.eb') }}" class="w-full text-center bg-slate-700 hover:bg-slate-800 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition duration-300">
+                            Exporter mon EB (DOCX)
+                        </a>
                     </div>
                 </div>
             </div>

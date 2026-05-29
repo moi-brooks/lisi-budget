@@ -43,7 +43,7 @@
 
                         @if($selectedBudget && $hasApprovedEngagements)
                             <div class="border-t border-slate-50 mt-1"></div>
-                            <div class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/50">Formulaire Officiel (Saison {{ $selectedBudget->saison }})</div>
+                            <div class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/50">Formulaire Officiel (Année {{ $selectedBudget->annee }})</div>
                             
                             <a href="{{ route('admin.exports.besoins', $selectedBudget) }}" class="flex items-center gap-3 px-4 py-3 text-sm text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition font-semibold">
                                 <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -111,11 +111,11 @@
 
                         <!-- Saison -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Saison</label>
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Année</label>
                             <select name="saison" class="w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all" onchange="this.form.submit()">
-                                <option value="">Toutes les saisons</option>
+                                <option value="">Toutes les années</option>
                                 @foreach($saisons as $s)
-                                    <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>Saison {{ $s }}</option>
+                                    <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>{{ $s }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -173,7 +173,7 @@
                                     </td>
                                     <td class="p-5">
                                         <div class="font-semibold text-slate-700">{{ $engagement->emetteur->user->name }}</div>
-                                        <div class="text-xs text-indigo-500 mt-0.5">Saison {{ $engagement->ligneProposee?->ligne?->budget?->saison ?? '—' }}</div>
+                                        <div class="text-xs text-indigo-500 mt-0.5">Année {{ $engagement->ligneProposee?->ligne?->budget?->annee ?? '—' }}</div>
                                     </td>
                                     <td class="p-5 text-right font-black text-slate-900">
                                         {{ number_format($engagement->total_ttc, 2, ',', ' ') }} <span class="text-[10px] text-slate-400 font-normal ml-0.5">DH</span>

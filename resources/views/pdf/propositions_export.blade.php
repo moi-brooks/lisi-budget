@@ -49,7 +49,7 @@
         <div class="header-right">
             <div class="doc-title">Liste des Propositions</div>
             <div class="doc-meta">
-                @if($saison) Saison: {{ $saison }} | @endif
+                @if($saison) Année: {{ $saison }} | @endif
                 Statut: {{ ucfirst(str_replace('_', ' ', $status)) }}
             </div>
         </div>

@@ -117,7 +117,7 @@ class ExportController extends Controller
         );
 
         // Save and Download
-        $filename = "Expressions_Besoins_" . str_replace(' ', '_', $budget->saison) . ".docx";
+        $filename = "Expressions_Besoins_" . $budget->annee . ".docx";
         $tempPath = storage_path('app/temp/' . $filename);
         
         if (!file_exists(storage_path('app/temp'))) {
@@ -135,7 +135,7 @@ class ExportController extends Controller
      */
     public function exportExcel(Budget $budget)
     {
-        $filename = "Expressions_Besoins_" . str_replace(' ', '_', $budget->saison) . ".xlsx";
-        return Excel::download(new BesoinsExport($budget->id, $budget->saison), $filename);
+        $filename = "Expressions_Besoins_" . $budget->annee . ".xlsx";
+        return Excel::download(new BesoinsExport($budget->id, $budget->annee), $filename);
     }
 }

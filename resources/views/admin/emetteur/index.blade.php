@@ -42,7 +42,7 @@
                             <tr class="bg-slate-50/50 uppercase text-xs text-slate-500 font-semibold tracking-wider border-b border-slate-100">
                             <th class="p-4">Nom Complet</th>
                             <th class="p-4">Profession</th>
-                            <th class="p-4">Budget (Saison)</th>
+                            <th class="p-4">Année budgétaire</th>
                             <th class="p-4">Dotation (DH)</th>
                             <th class="p-4 text-center">Actions</th>
                         </tr>
@@ -55,7 +55,7 @@
                                     <div class="text-xs text-slate-400 font-normal mt-0.5">{{ $emetteur->user->email }}</div>
                                 </td>
                                 <td class="p-4 text-slate-600">{{ $emetteur->profession ?? '-' }}</td>
-                                <td class="p-4 text-slate-600">{{ $emetteur->budget->saison }}</td>
+                                <td class="p-4 text-slate-600">{{ $emetteur->budget->annee }}</td>
                                 <td class="p-4 font-bold text-indigo-600">{{ number_format($emetteur->dotation, 2, ',', ' ') }}</td>
                                 <td class="p-4 text-center">
                                     <div class="flex justify-center space-x-2">

@@ -13,12 +13,12 @@ use App\Models\Besoin;
 class BesoinsExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithTitle
 {
     protected $budgetId;
-    protected $saison;
+    protected $annee;
 
-    public function __construct(int $budgetId, string $saison)
+    public function __construct(int $budgetId, $annee)
     {
         $this->budgetId = $budgetId;
-        $this->saison = $saison;
+        $this->annee = $annee;
     }
 
     public function collection()
@@ -42,7 +42,7 @@ class BesoinsExport implements FromCollection, WithHeadings, WithMapping, WithSt
     public function headings(): array
     {
         return [
-            ['Expressions de besoins - ' . $this->saison], // Title row
+            ['Expressions de besoins - ' . $this->annee], // Title row
             [
                 'Nature du besoin',
                 'Description',
@@ -109,6 +109,6 @@ class BesoinsExport implements FromCollection, WithHeadings, WithMapping, WithSt
 
     public function title(): string
     {
-        return "Expressions de besoins " . $this->saison;
+        return "Expressions de besoins " . $this->annee;
     }
 }

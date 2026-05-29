@@ -39,9 +39,9 @@
                     <form method="GET" action="{{ route('admin.propositions.index') }}" class="flex items-center" id="filter-form-props">
                         <input type="hidden" name="statut" value="{{ $status }}">
                         <select name="saison" onchange="document.getElementById('filter-form-props').submit()" class="rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm text-slate-600 bg-white">
-                            <option value="">Toutes les saisons</option>
+                            <option value="">Toutes les années</option>
                             @foreach($saisons as $s)
-                                <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>Saison {{ $s }}</option>
+                                <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>{{ $s }}</option>
                             @endforeach
                         </select>
                     </form>

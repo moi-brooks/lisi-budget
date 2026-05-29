@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <!-- Cards Section -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div class="bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl p-6 flex flex-col justify-center border border-slate-100">
@@ -39,26 +39,21 @@
                         </div>
                     </div>
 
-                    <!-- Right: Summary info -->
+                    <!-- Right: Summary -->
                     <div class="w-full md:w-1/2 p-8 flex flex-col justify-center space-y-6">
                         <h3 class="text-lg font-bold text-slate-900">Synthèse Financière</h3>
                         <div class="space-y-4">
                             @php
                                 $budgetActif = \App\Models\Budget::latest()->first();
-                                $totalEngage = \App\Models\Engagement::where('statut', 'approuve')->sum('total_ttc');
-                                $totalAttente = \App\Models\Engagement::where('statut', 'en_attente')->sum('total_ttc');
+                                $totalValide = \App\Models\Engagement::where('statut', 'approuve')->sum('total_ttc');
                             @endphp
                             <div class="flex items-center justify-between py-3 border-b border-slate-100">
-                                <span class="text-sm text-slate-500 font-medium">Budget annuel total</span>
+                                <span class="text-sm text-slate-500 font-medium">Dotation annuelle</span>
                                 <span class="text-sm font-bold text-slate-900">{{ $budgetActif ? number_format($budgetActif->total, 0, ',', ' ') . ' DH' : '—' }}</span>
                             </div>
-                             <div class="flex items-center justify-between py-3 border-b border-slate-100">
-                                <span class="text-sm text-slate-500 font-medium">Total déduit (EB approuvés)</span>
-                                <span class="text-sm font-bold text-emerald-600">{{ number_format($totalEngage, 0, ',', ' ') }} DH</span>
-                            </div>
                             <div class="flex items-center justify-between py-3 border-b border-slate-100">
-                                <span class="text-sm text-slate-500 font-medium">Total en attente</span>
-                                <span class="text-sm font-bold text-amber-500">{{ number_format($totalAttente, 0, ',', ' ') }} DH</span>
+                                <span class="text-sm text-slate-500 font-medium">Budget validé (EB approuvés)</span>
+                                <span class="text-sm font-bold text-emerald-600">{{ number_format($totalValide, 0, ',', ' ') }} DH</span>
                             </div>
                             <div class="flex items-center justify-between py-3 border-b border-slate-100">
                                 <span class="text-sm text-slate-500 font-medium">Émetteurs actifs</span>
@@ -67,6 +62,16 @@
                             <div class="flex items-center justify-between py-3">
                                 <span class="text-sm text-slate-500 font-medium">Propositions en attente</span>
                                 <span class="text-sm font-bold text-indigo-600">{{ $stats['propositions_attente'] }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Status legend #16 -->
+                        <div class="mt-4 pt-4 border-t border-slate-100">
+                            <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-2">Légende des statuts</p>
+                            <div class="flex items-center gap-4 flex-wrap">
+                                <span class="flex items-center gap-1.5 text-xs text-slate-600"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Approuvé</span>
+                                <span class="flex items-center gap-1.5 text-xs text-slate-600"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Rejeté</span>
+                                <span class="flex items-center gap-1.5 text-xs text-slate-600"><span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span> En attente</span>
                             </div>
                         </div>
                     </div>
@@ -110,7 +115,6 @@
                         }
                     }
                 });
-
             }
         });
     </script>

@@ -40,7 +40,7 @@
                         <select name="budget_id" id="budget_id" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                             @foreach($budgets as $budget)
                                 <option value="{{ $budget->id }}" {{ old('budget_id', $emetteur->budget_id) == $budget->id ? 'selected' : '' }}>
-                                    {{ $budget->saison }} (Dispo: {{ number_format($budget->reliquat, 2) }} DH)
+                                    Année {{ $budget->annee }} (Dispo: {{ number_format($budget->reliquat, 2) }} DH)
                                 </option>
                             @endforeach
                         </select>

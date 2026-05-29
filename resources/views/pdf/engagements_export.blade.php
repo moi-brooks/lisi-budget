@@ -49,8 +49,7 @@
         <div class="header-right">
             <div class="doc-title">Expressions de Besoins</div>
             <div class="doc-meta">
-                @if($saison) Saison: {{ $saison }} | @endif
-                @if(isset($annee) && $annee) Année: {{ $annee }} | @endif
+                @if($saison) Année: {{ $saison }} | @endif
                 Statut: {{ ucfirst(str_replace('_', ' ', $status)) }}
             </div>
         </div>

@@ -22,12 +22,12 @@ class BudgetController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'annee' => 'required|integer|min:2020:max:2099',
-            'saison' => 'required|string|max:20',
+            'annee' => 'required|integer|min:2020|max:2099',
             'total' => 'required|numeric|min:0',
             'date_limite' => 'nullable|date',
         ]);
 
+        $validated['saison'] = $validated['annee'] . '-' . ($validated['annee'] + 1);
         $validated['administrateur_id'] = auth()->id();
         Budget::create($validated);
 
@@ -52,12 +52,12 @@ class BudgetController extends Controller
     public function update(Request $request, Budget $budget)
     {
         $validated = $request->validate([
-            'annee' => 'required|integer|min:2020:max:2099',
-            'saison' => 'required|string|max:20',
+            'annee' => 'required|integer|min:2020|max:2099',
             'total' => 'required|numeric|min:0',
             'date_limite' => 'nullable|date',
         ]);
 
+        $validated['saison'] = $validated['annee'] . '-' . ($validated['annee'] + 1);
         $budget->update($validated);
         return redirect()->route('admin.budgets.index')->with('success', 'Budget mis à jour.');
     }
