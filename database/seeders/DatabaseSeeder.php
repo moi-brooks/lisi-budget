@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Admin
         $admin = User::firstOrCreate(
-            ['email' => 'admin@lisi.ma'],
+            ['email' => 'admin@uca.ac.ma'],
             [
                 'name' => 'Dr. Khalid Mansouri',
                 'password' => Hash::make('password'),
@@ -44,9 +44,9 @@ class DatabaseSeeder extends Seeder
 
         // 4. Emetteurs (Research Professors)
         $emetteurData = [
-            ['name' => 'Pr. Ahmed Alami', 'email' => 'alami@lisi.ma', 'dotation' => 150000],
-            ['name' => 'Pr. Sara Benali', 'email' => 'benali@lisi.ma', 'dotation' => 200000],
-            ['name' => 'Dr. Yassine Zahiri', 'email' => 'zahiri@lisi.ma', 'dotation' => 120000],
+            ['name' => 'Pr. Ahmed Alami', 'email' => 'alami@uca.ac.ma', 'dotation' => 150000],
+            ['name' => 'Pr. Sara Benali', 'email' => 'benali@uca.ac.ma', 'dotation' => 200000],
+            ['name' => 'Dr. Yassine Zahiri', 'email' => 'zahiri@uca.ac.ma', 'dotation' => 120000],
         ];
 
         foreach ($emetteurData as $data) {
