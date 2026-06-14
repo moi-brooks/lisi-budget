@@ -34,7 +34,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6"
                  x-data="{
                     ligneId: '{{ old('ligne_proposee_id', request('ligne_id', '')) }}',
-                    lignesData: {{ json_encode($lignesApprouvees->map(fn($l) => ['id' => $l->id, 'montant' => (float)$l->montant_disponible])->keyBy('id')) }},
+                    lignesData: {{ json_encode($lignesApprouvees->map(fn($l) => ['id' => $l->id, 'montant' => (float)$l->montant_disponible, 'epuise' => $l->montant_disponible <= 0])->keyBy('id')) }},
                     articles: [{ intitule: '', description: '', quantite: '1', prix_unitaire: '' }],
                     tva: '{{ old('tva', 20) }}',
                     get totalHT() {
@@ -48,12 +48,19 @@
                         const t = parseFloat(this.tva) || 0;
                         return this.totalHT * (1 + t / 100);
                     },
-                    get montantDispo() {
+                    get ligneRaw() {
                         if (!this.ligneId) return null;
-                        const l = this.lignesData[this.ligneId];
-                        return l ? parseFloat(l.montant) : null;
+                        return this.lignesData[this.ligneId] ?? null;
+                    },
+                    get montantDispo() {
+                        if (!this.ligneRaw) return null;
+                        return Math.max(0, parseFloat(this.ligneRaw.montant));
+                    },
+                    get ligneEpuisee() {
+                        return this.ligneRaw ? this.ligneRaw.epuise : false;
                     },
                     get depasse() {
+                        if (this.ligneEpuisee) return true;
                         if (this.montantDispo === null || this.totalTTC === 0) return false;
                         return this.totalTTC > this.montantDispo;
                     },
@@ -80,9 +87,16 @@
                                 class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                             <option value="">-- Sélectionner une ligne approuvée --</option>
                             @foreach($lignesApprouvees as $ligne_prop)
-                                <option value="{{ $ligne_prop->id }}" {{ old('ligne_proposee_id', request('ligne_id')) == $ligne_prop->id ? 'selected' : '' }}>
-                                    {{ $ligne_prop->ligne->code_complet }} — {{ $ligne_prop->ligne->nom }}
-                                    (Restant : {{ number_format($ligne_prop->montant_disponible, 2, ',', ' ') }} DH)
+                                @php $epuise = $ligne_prop->montant_disponible <= 0; @endphp
+                                <option value="{{ $ligne_prop->id }}"
+                                        {{ old('ligne_proposee_id', request('ligne_id')) == $ligne_prop->id ? 'selected' : '' }}
+                                        {{ $epuise ? 'disabled' : '' }}
+                                        style="{{ $epuise ? 'color:#9ca3af;' : '' }}">
+                                    @if($epuise)
+                                        {{ $ligne_prop->ligne->nom }} (épuisé)
+                                    @else
+                                        {{ $ligne_prop->ligne->nom }} (Restant : {{ number_format($ligne_prop->montant_disponible, 2, ',', ' ') }} DH)
+                                    @endif
                                 </option>
                             @endforeach
                         </select>
@@ -183,7 +197,15 @@
                         </div>
                     </div>
 
-                    <div x-show="depasse" x-transition
+                    <div x-show="ligneEpuisee" x-transition
+                         class="mb-4 bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded-lg font-semibold text-sm">
+                        Cette ligne budgétaire est <span class="font-black">épuisée</span> — aucun engagement possible.
+                        <span class="block text-xs font-normal mt-1">
+                            Restant disponible : <span class="font-bold text-red-600">0,00 DH</span>
+                        </span>
+                    </div>
+
+                    <div x-show="!ligneEpuisee && depasse" x-transition
                          class="mb-4 bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded-lg font-semibold text-sm">
                         Le montant de l'engagement dépasse le montant alloué à cette ligne budgétaire.
                         <span class="block text-xs font-normal mt-1">

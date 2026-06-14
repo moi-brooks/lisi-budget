@@ -15,46 +15,45 @@ class PropositionController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('statut', 'en_attente');
-        $saison = $request->get('saison', '');
-        
-        $saisons = Budget::select('saison')->distinct()->orderBy('saison', 'desc')->pluck('saison');
+        $annee = $request->get('annee', '');
+
+        $annees = Budget::select('annee')->distinct()->orderBy('annee', 'desc')->pluck('annee');
 
         $query = LigneBudgetProposee::with(['emetteur.user', 'ligne.budget'])
             ->where('statut', '=', $status);
 
-        if ($saison) {
-            $query->whereHas('ligne.budget', function ($q) use ($saison) {
-                $q->where('saison', $saison);
+        if ($annee) {
+            $query->whereHas('ligne.budget', function ($q) use ($annee) {
+                $q->where('annee', $annee);
             });
         }
 
         $propositions = $query->latest()->get();
-            
-        return view('admin.proposition.index', compact('propositions', 'status', 'saisons', 'saison'));
+
+        return view('admin.proposition.index', compact('propositions', 'status', 'annees', 'annee'));
     }
 
     public function exportExcel(Request $request)
     {
         $status = $request->get('statut');
-        $saison = $request->get('saison');
+        $annee = $request->get('annee');
 
-        $filename = 'propositions_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.xlsx';
-        return (new PropositionsExport($saison, $status))->download($filename);
+        $filename = 'propositions_' . ($annee ? "{$annee}_" : '') . date('Ymd_Hi') . '.xlsx';
+        return (new PropositionsExport($annee, $status))->download($filename);
     }
 
     public function exportPdf(Request $request)
     {
         $status = $request->get('statut');
-        $saison = $request->get('saison');
+        $annee = $request->get('annee');
 
-        // Reuse the logic from PropositionsExport to get the same formatted collection
-        $export = new PropositionsExport($saison, $status);
+        $export = new PropositionsExport($annee, $status);
         $propositions = $export->collection();
 
-        $pdf = Pdf::loadView('pdf.propositions_export', compact('propositions', 'status', 'saison'))
+        $pdf = Pdf::loadView('pdf.propositions_export', compact('propositions', 'status', 'annee'))
             ->setPaper('a4', 'landscape');
 
-        $filename = 'propositions_' . ($saison ? "{$saison}_" : '') . date('Ymd_Hi') . '.pdf';
+        $filename = 'propositions_' . ($annee ? "{$annee}_" : '') . date('Ymd_Hi') . '.pdf';
         return $pdf->download($filename);
     }
 

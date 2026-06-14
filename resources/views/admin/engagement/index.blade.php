@@ -109,17 +109,6 @@
                             </select>
                         </div>
 
-                        <!-- Saison -->
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Année</label>
-                            <select name="saison" class="w-full rounded-xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm transition-all" onchange="this.form.submit()">
-                                <option value="">Toutes les années</option>
-                                @foreach($saisons as $s)
-                                    <option value="{{ $s }}" {{ $saison == $s ? 'selected' : '' }}>{{ $s }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
                         <!-- Émetteur -->
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Émetteur</label>

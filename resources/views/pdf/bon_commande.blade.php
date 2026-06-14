@@ -47,8 +47,8 @@
         /* Signatures */
         .sig-section { margin-top: 40px; }
         .sig-cell { padding: 0 10px; width: 33.33%; text-align: center; }
-        .sig-label { font-size: 8.5pt; font-weight: bold; color: #475569; text-transform: uppercase; margin-bottom: 15px; }
-        .sig-box { border: 1px dashed #cbd5e1; height: 120px; border-radius: 8px; background: #fbfbfb; }
+        .sig-label { font-size: 9pt; font-weight: bold; color: #1e293b; text-transform: uppercase; margin-bottom: 0; }
+        .sig-space { height: 90px; }
 
         /* Footer */
         .footer { position: fixed; bottom: -10px; left: 0; right: 0; font-size: 7.5pt; color: #cbd5e1; text-align: center; border-top: 1px solid #f8fafc; padding-top: 5px; }
@@ -169,16 +169,16 @@
         <table class="w-full">
             <tr>
                 <td class="sig-cell">
-                    <div class="sig-label">Le Demandeur</div>
-                    <div class="sig-box"></div>
+                    <div class="sig-label">L'ÉMETTEUR</div>
+                    <div class="sig-space"></div>
                 </td>
                 <td class="sig-cell">
-                    <div class="sig-label">L'Intendance (LISI)</div>
-                    <div class="sig-box"></div>
+                    <div class="sig-label">L'INTENDANCE (LISI)</div>
+                    <div class="sig-space"></div>
                 </td>
                 <td class="sig-cell">
-                    <div class="sig-label">Direction Labo</div>
-                    <div class="sig-box"></div>
+                    <div class="sig-label">DIRECTION LABO</div>
+                    <div class="sig-space"></div>
                 </td>
             </tr>
         </table>

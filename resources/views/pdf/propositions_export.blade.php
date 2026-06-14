@@ -49,7 +49,7 @@
         <div class="header-right">
             <div class="doc-title">Liste des Propositions</div>
             <div class="doc-meta">
-                @if($saison) Année: {{ $saison }} | @endif
+                @if($annee) Année: {{ $annee }} | @endif
                 Statut: {{ ucfirst(str_replace('_', ' ', $status)) }}
             </div>
         </div>
@@ -58,7 +58,7 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 10%">Saison</th>
+                <th style="width: 10%">Année</th>
                 <th style="width: 15%">Date Saisie</th>
                 <th style="width: 15%">Émetteur</th>
                 <th style="width: 10%">Code Budget</th>
@@ -70,7 +70,7 @@
         <tbody>
             @foreach($propositions as $row)
                 <tr>
-                    <td>{{ $row['Saison'] }}</td>
+                    <td>{{ $row['Année'] }}</td>
                     <td>{{ $row['Saisie le'] }}</td>
                     <td>{{ $row['Émetteur'] }}</td>
                     <td>{{ $row['Code Budget'] }}</td>

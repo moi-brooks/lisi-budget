@@ -38,10 +38,11 @@ class EngagementController extends Controller
             return redirect()->route('emetteur.engagements.index')->with('error', 'L\'exercice budgétaire est clôturé. Aucun nouvel engagement possible.');
         }
 
-        // Can only create Engagement on APPROVED propositions
+        // Only approved lines belonging to this emetteur
         $lignesApprouvees = $emetteur->lignesProposees()
             ->with('ligne')
             ->where('statut', 'approuve')
+            ->where('emetteur_id', $emetteur->id)
             ->get();
             
         $fournisseurs = Fournisseur::orderBy('nom')->get();
@@ -71,13 +72,21 @@ class EngagementController extends Controller
             'prix_unitaire.*' => 'required|numeric|min:0.01',
         ]);
 
-        // Security check
-        $ligne = $emetteur->lignesProposees()->findOrFail($validated['ligne_proposee_id']);
+        // Security: must belong to this emetteur and be approved
+        $ligne = $emetteur->lignesProposees()
+            ->where('emetteur_id', $emetteur->id)
+            ->findOrFail($validated['ligne_proposee_id']);
+
         if ($ligne->statut !== 'approuve') {
             abort(403, 'Ligne non approuvée.');
         }
 
-        // --- NEW: Budget Check ---
+        // Block if line is already exhausted
+        if ($ligne->montant_disponible <= 0) {
+            return back()->withInput()->with('error', 'Cette ligne budgétaire est épuisée. Aucun engagement possible.');
+        }
+
+        // --- Budget Check ---
         $totalHT = 0;
         if ($request->has('intitule')) {
             foreach ($request->intitule as $key => $intitule) {

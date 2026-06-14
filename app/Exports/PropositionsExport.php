@@ -7,13 +7,13 @@ use Rap2hpoutre\FastExcel\FastExcel;
 
 class PropositionsExport
 {
-    protected ?string $saison;
+    protected ?string $annee;
     protected ?string $statut;
 
-    public function __construct(?string $saison = null, ?string $statut = null)
+    public function __construct(?string $annee = null, ?string $statut = null)
     {
-        $this->saison  = $saison;
-        $this->statut  = $statut;
+        $this->annee  = $annee;
+        $this->statut = $statut;
     }
 
     public function collection()
@@ -21,9 +21,9 @@ class PropositionsExport
         $query = LigneBudgetProposee::with(['emetteur.user', 'ligne.budget'])
             ->latest();
 
-        if ($this->saison) {
+        if ($this->annee) {
             $query->whereHas('ligne.budget', function ($q) {
-                $q->where('saison', $this->saison);
+                $q->where('annee', $this->annee);
             });
         }
 
@@ -32,7 +32,7 @@ class PropositionsExport
         }
 
         return $query->get()->map(fn ($p) => [
-            'Saison'            => $p->ligne?->budget?->saison ?? '—',
+            'Année'             => $p->ligne?->budget?->annee ?? '—',
             'Émetteur'          => $p->emetteur?->user?->name ?? '—',
             'Ligne Originale'   => $p->ligne?->nom ?? '—',
             'Code Budget'       => $p->ligne?->code_complet ?? '—',
