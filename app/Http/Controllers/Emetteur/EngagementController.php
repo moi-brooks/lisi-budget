@@ -8,6 +8,9 @@ use App\Models\Engagement;
 use App\Models\Fournisseur;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\SimpleType\Jc;
 
 class EngagementController extends Controller
 {
@@ -35,10 +38,11 @@ class EngagementController extends Controller
             return redirect()->route('emetteur.engagements.index')->with('error', 'L\'exercice budgétaire est clôturé. Aucun nouvel engagement possible.');
         }
 
-        // Can only create Engagement on APPROVED propositions
+        // Only approved lines belonging to this emetteur
         $lignesApprouvees = $emetteur->lignesProposees()
             ->with('ligne')
             ->where('statut', 'approuve')
+            ->where('emetteur_id', $emetteur->id)
             ->get();
             
         $fournisseurs = Fournisseur::orderBy('nom')->get();
@@ -68,13 +72,21 @@ class EngagementController extends Controller
             'prix_unitaire.*' => 'required|numeric|min:0.01',
         ]);
 
-        // Security check
-        $ligne = $emetteur->lignesProposees()->findOrFail($validated['ligne_proposee_id']);
+        // Security: must belong to this emetteur and be approved
+        $ligne = $emetteur->lignesProposees()
+            ->where('emetteur_id', $emetteur->id)
+            ->findOrFail($validated['ligne_proposee_id']);
+
         if ($ligne->statut !== 'approuve') {
             abort(403, 'Ligne non approuvée.');
         }
 
-        // --- NEW: Budget Check ---
+        // Block if line is already exhausted
+        if ($ligne->montant_disponible <= 0) {
+            return back()->withInput()->with('error', 'Cette ligne budgétaire est épuisée. Aucun engagement possible.');
+        }
+
+        // --- Budget Check ---
         $totalHT = 0;
         if ($request->has('intitule')) {
             foreach ($request->intitule as $key => $intitule) {
@@ -182,6 +194,90 @@ class EngagementController extends Controller
         $engagement->save();
 
         return back()->with('success', 'Article ajouté.');
+    }
+
+    public function exportEb()
+    {
+        $emetteur = auth()->user()->emetteur;
+        $annee = $emetteur->budget->annee;
+
+        $besoins = Besoin::whereHas('engagement', function($q) use ($emetteur) {
+            $q->where('statut', 'approuve')->where('emetteur_id', $emetteur->id);
+        })
+        ->with('engagement.ligneProposee.ligne')
+        ->get()
+        ->sortBy('engagement.ligneProposee.ligne.nom');
+
+        $phpWord = new PhpWord();
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(12);
+
+        $section = $phpWord->addSection([
+            'marginLeft' => 1134, 'marginRight' => 1134,
+            'marginTop' => 1134, 'marginBottom' => 1134,
+            'pageSizeW' => 11906, 'pageSizeH' => 16838,
+        ]);
+
+        $section->addText(
+            "Laboratoire : LISI (Laboratoire d'Informatique et de Systèmes Intelligents)",
+            ['bold' => true, 'size' => 12]
+        );
+        $section->addText(
+            "Émetteur : " . $emetteur->user->name,
+            ['bold' => true, 'size' => 12]
+        );
+        $section->addText(
+            "Tableau — Expression des besoins " . $annee,
+            ['bold' => true, 'size' => 12]
+        );
+        $section->addTextBreak(1);
+
+        $phpWord->addTableStyle('EBTable', [
+            'borderColor' => '000000', 'borderSize' => 6, 'cellMargin' => 80,
+        ]);
+        $table = $section->addTable('EBTable');
+
+        $hStyle = ['bold' => true, 'size' => 12];
+        $hPStyle = ['alignment' => Jc::CENTER, 'spaceAfter' => 0];
+        $hCell = ['bgColor' => 'D9D9D9', 'valign' => 'center'];
+
+        $table->addRow();
+        $table->addCell(2500, $hCell)->addText("Nature du besoin", $hStyle, $hPStyle);
+        $table->addCell(4000, $hCell)->addText("Description", $hStyle, $hPStyle);
+        $table->addCell(1500, $hCell)->addText("Prix unitaire\n(DH)", $hStyle, $hPStyle);
+        $table->addCell(1000, $hCell)->addText("Qté", $hStyle, $hPStyle);
+        $table->addCell(2000, $hCell)->addText("Montant estimé\n(DH)", $hStyle, $hPStyle);
+
+        $total = 0;
+        foreach ($besoins as $besoin) {
+            $table->addRow();
+            $nature = $besoin->engagement->ligneProposee->ligne->nom ?? '—';
+            $desc = $besoin->intitule . ($besoin->description ? "\n" . $besoin->description : '');
+            $pu = floatval($besoin->prix_unitaire);
+            $mt = floatval($besoin->montant);
+            $total += $mt;
+            $table->addCell(null)->addText($nature);
+            $table->addCell(null)->addText($desc);
+            $table->addCell(null, ['alignment' => Jc::CENTER])->addText(number_format($pu, 2, ',', ' ') . " DH");
+            $table->addCell(null, ['alignment' => Jc::CENTER])->addText($besoin->quantite);
+            $table->addCell(null, ['alignment' => Jc::CENTER])->addText(number_format($mt, 2, ',', ' ') . " DH");
+        }
+
+        $section->addTextBreak(1);
+        $section->addText(
+            "Total estimé : " . number_format($total, 2, ',', ' ') . " DH",
+            ['bold' => true, 'size' => 12],
+            ['alignment' => Jc::RIGHT]
+        );
+
+        $filename = "EB_" . $emetteur->user->name . "_" . $annee . ".docx";
+        $tempPath = storage_path('app/temp/' . $filename);
+        if (!file_exists(storage_path('app/temp'))) {
+            mkdir(storage_path('app/temp'), 0755, true);
+        }
+        IOFactory::createWriter($phpWord, 'Word2007')->save($tempPath);
+
+        return response()->download($tempPath)->deleteFileAfterSend(true);
     }
 
     public function markLivre(Request $request, $id)

@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Lignes Budgétaires — {{ $budget->saison }}
+                    Lignes Budgétaires — {{ $budget->annee }}
                 </h2>
                 <p class="text-sm text-gray-500 mt-1">Gérez les rubriques de dépenses associées à ce budget.</p>
             </div>
@@ -27,14 +27,16 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-slate-50 border-b border-slate-100">
                         <tr>
+                            <th class="px-4 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 w-12">#</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Nom de la Rubrique</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500">Code Ligne</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-500 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        @forelse($lignes as $ligne)
+                        @forelse($lignes as $index => $ligne)
                             <tr class="hover:bg-slate-50 transition">
+                                <td class="px-4 py-4 text-sm font-bold text-slate-400">{{ $index + 1 }}</td>
                                 <td class="px-6 py-4 text-sm font-semibold text-slate-800">{{ $ligne->nom }}</td>
                                 <td class="px-6 py-4 text-sm font-mono text-slate-500">{{ $ligne->code_ligne }}</td>
                                 <td class="px-6 py-4 text-right">
@@ -54,7 +56,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-10 text-center text-slate-400 text-sm italic">
+                                <td colspan="4" class="px-6 py-10 text-center text-slate-400 text-sm italic">
                                     Aucune ligne budgétaire pour ce budget. Créez-en une.
                                 </td>
                             </tr>

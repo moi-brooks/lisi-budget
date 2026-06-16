@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/engagements/{id}/besoins', [EmetteurEngagementController::class, 'storeBesoin'])->name('engagements.besoins.store');
         Route::get('/engagements/{id}/download', [EmetteurEngagementController::class, 'download'])->name('engagements.download');
         Route::patch('/besoins/{id}/livraison', [EmetteurEngagementController::class, 'markLivre'])->name('besoins.livraison');
+        Route::get('/export/eb', [EmetteurEngagementController::class, 'exportEb'])->name('export.eb');
     });
 });
 

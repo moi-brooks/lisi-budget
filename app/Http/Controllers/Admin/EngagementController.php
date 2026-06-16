@@ -15,24 +15,16 @@ class EngagementController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('statut', 'en_attente');
-        $saison = $request->get('saison', '');
         $annee = $request->get('annee', '');
         $emetteur_id = $request->get('emetteur_id', '');
         $ligne_id = $request->get('ligne_id', '');
 
-        $saisons = Budget::select('saison')->distinct()->orderBy('saison', 'desc')->pluck('saison');
         $annees = Budget::select('annee')->distinct()->orderBy('annee', 'desc')->pluck('annee');
         $emetteurs = \App\Models\Emetteur::with('user')->get();
         $lignes = \App\Models\LigneBudgetaire::all();
         
         $query = Engagement::with(['emetteur.user', 'fournisseur', 'ligneProposee.ligne.budget'])
             ->where('statut', '=', $status);
-
-        if ($saison) {
-            $query->whereHas('ligneProposee.ligne.budget', function ($q) use ($saison) {
-                $q->where('saison', $saison);
-            });
-        }
 
         if ($annee) {
             $query->whereHas('ligneProposee.ligne.budget', function ($q) use ($annee) {
@@ -53,13 +45,9 @@ class EngagementController extends Controller
         $engagements = $query->latest()->get();
 
         // Resolve selected budget for official exports
-        $selectedBudget = null;
-        if ($saison) {
-            $selectedBudget = Budget::where('saison', $saison)->first();
-        } else {
-            // Default to latest budget if no saison selected
-            $selectedBudget = Budget::orderByDesc('annee')->orderByDesc('created_at')->first();
-        }
+        $selectedBudget = $annee
+            ? Budget::where('annee', $annee)->orderByDesc('created_at')->first()
+            : Budget::orderByDesc('annee')->orderByDesc('created_at')->first();
 
         $hasApprovedEngagements = false;
         if ($selectedBudget) {
@@ -70,7 +58,7 @@ class EngagementController extends Controller
         }
             
         return view('admin.engagement.index', compact(
-            'engagements', 'status', 'saisons', 'saison', 
+            'engagements', 'status',
             'annees', 'annee', 'emetteurs', 'emetteur_id', 'lignes', 'ligne_id',
             'selectedBudget', 'hasApprovedEngagements'
         ));
