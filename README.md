@@ -70,7 +70,7 @@ Accéder à : [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## Encadrant
 
-**Pr. ESSAID EL BACHARI** — Université Cadi Ayyad, Marrakech
+**Pr. ESSAID EL BACHARI** — Faculté des Sciences Semlalia — Université Cadi Ayyad, Marrakech
 
 ## Réalisé par
 
