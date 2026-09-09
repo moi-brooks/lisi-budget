@@ -51,6 +51,58 @@ Accéder à : [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
 
+## Déploiement Railway
+
+Le dépôt contient déjà un `Procfile` et un modèle `.env.railway.example`.
+
+### 1. Connecter le repo GitHub à Railway
+
+1. Créer un compte sur [railway.app](https://railway.app) puis **New Project → Deploy from GitHub repo**.
+2. Sélectionner le dépôt `lisi-budget`. Railway détecte automatiquement le projet Laravel (Nixpacks) et lance un premier build.
+3. Le `Procfile` définit la commande de démarrage :
+   `web: php artisan serve --host=0.0.0.0 --port=$PORT`
+
+### 2. Ajouter un service MySQL
+
+1. Dans le projet Railway : **New → Database → Add MySQL**.
+2. Railway provisionne une base et expose les variables `MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`, `MYSQLUSER`, `MYSQLPASSWORD`.
+
+### 3. Configurer les variables d'environnement
+
+Dans le service de l'application → onglet **Variables**, reporter le contenu de `.env.railway.example`.
+Pour les variables `DB_`, utiliser les *reference variables* du service MySQL :
+
+| Variable        | Valeur                        |
+|-----------------|-------------------------------|
+| `DB_CONNECTION` | `mysql`                       |
+| `DB_HOST`       | `${{MySQL.MYSQLHOST}}`        |
+| `DB_PORT`       | `${{MySQL.MYSQLPORT}}`        |
+| `DB_DATABASE`   | `${{MySQL.MYSQLDATABASE}}`    |
+| `DB_USERNAME`   | `${{MySQL.MYSQLUSER}}`        |
+| `DB_PASSWORD`   | `${{MySQL.MYSQLPASSWORD}}`    |
+
+Ne pas oublier :
+- `APP_KEY` — générer en local avec `php artisan key:generate --show` puis coller la valeur.
+- `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://<domaine-railway>`.
+- Extensions PHP requises pour les exports : **`gd`** (PDF / DomPDF) et **`zip`** (DOCX & Excel).
+  Sur Nixpacks : `NIXPACKS_PHP_EXTENSIONS=gd,zip` (variable d'environnement du service).
+
+### 4. Lancer les migrations depuis Railway
+
+Après le premier déploiement, ouvrir un shell Railway sur le service de l'app
+(**⋮ → Terminal**, ou `railway run` en local avec la CLI) et exécuter :
+
+```bash
+php artisan migrate --seed --force
+php artisan storage:link
+php artisan config:cache && php artisan route:cache && php artisan view:cache
+```
+
+`--seed` crée l'admin, les lignes budgétaires de base et un jeu de données de démonstration.
+Pour un environnement vierge, lancer `php artisan migrate --force` sans `--seed`.
+
+---
+
 ## Identifiants par défaut
 
 | Rôle | Email | Mot de passe |
