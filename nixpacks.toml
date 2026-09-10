@@ -2,26 +2,17 @@
 # Configuration Nixpacks — déploiement Railway (E-Intendance LISI)
 #
 # Prérequis : Railway → service de l'app → Settings → Build → Builder = "Nixpacks".
-# Si le builder est "Railpack" (défaut récent de Railway), ce fichier est IGNORÉ
-# (voir railpack.json) — bascule le builder sur Nixpacks pour que ceci s'applique.
+# Si le builder est "Railpack" (défaut récent de Railway), ce fichier est IGNORÉ.
+#
+# Extensions PHP : gérées via la variable Railway NIXPACKS_PHP_EXTENSIONS=gd,zip
+# (Nixpacks les active automatiquement, pas besoin d'install-php-extensions ici).
 # ---------------------------------------------------------------------------
 
-# Extensions PHP requises par l'application :
-#   gd   -> exports PDF (DomPDF)
-#   zip  -> exports DOCX (PhpWord) et Excel (Maatwebsite)
-#   pdo_mysql -> base de données Railway
-[phases.extensions]
-dependsOn = ["setup"]
-cmds = [
-  "install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo session tokenizer xml pdo_mysql gd zip"
-]
-
 # Build : dépendances front + compilation des assets (public/build/).
-# NB : pas de `config:cache` ici — les variables d'env Railway (APP_URL, DB_*)
-# ne sont pas toujours disponibles au build, ce qui figerait une config fausse
-# (assets http:// → mixed content). Le cache config est géré au démarrage (Procfile).
+# Pas de `config:cache` ici : les variables d'env Railway (APP_URL, DB_*) ne sont
+# pas garanties au build → config figée fausse. Le cache config est fait au
+# démarrage (Procfile).
 [phases.build]
-dependsOn = ["install", "extensions"]
 cmds = [
   "npm ci",
   "npm run build",
