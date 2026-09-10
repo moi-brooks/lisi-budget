@@ -11,6 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Railway (comme Heroku/Render) termine le TLS en amont : sans ceci,
+        // Laravel se croit en HTTP et génère des URLs d'assets http:// sur une
+        // page https:// → le navigateur bloque le CSS/JS (mixed content).
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
