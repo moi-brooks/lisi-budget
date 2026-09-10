@@ -12,10 +12,31 @@ use App\Http\Controllers\Emetteur\DashboardController as EmetteurDashboardContro
 use App\Http\Controllers\Emetteur\EngagementController as EmetteurEngagementController;
 use App\Http\Controllers\Emetteur\LigneProposeeController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
+});
+
+// -----------------------------------------------------------------------------
+// TEMPORAIRE — diagnostic déploiement Railway (erreur 500). À SUPPRIMER une fois
+// le déploiement stabilisé : cette route est publique et n'a aucune protection.
+// -----------------------------------------------------------------------------
+Route::get('/debug-railway', function () {
+    try {
+        DB::connection()->getPdo();
+        $dbOk = 'DB OK - ' . DB::connection()->getDatabaseName();
+    } catch (\Exception $e) {
+        $dbOk = 'DB FAIL: ' . $e->getMessage();
+    }
+
+    return response()->json([
+        'app_env' => env('APP_ENV'),
+        'app_key_set' => !empty(env('APP_KEY')),
+        'db_status' => $dbOk,
+        'php_version' => PHP_VERSION,
+    ]);
 });
 
 Route::middleware('auth')->group(function () {
