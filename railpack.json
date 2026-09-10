@@ -1,0 +1,9 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "provider": "php",
+  "steps": {
+    "build": {
+      "commands": []
+    }
+  }
+}
