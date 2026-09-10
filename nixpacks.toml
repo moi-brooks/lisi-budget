@@ -16,14 +16,14 @@ cmds = [
   "install-php-extensions ctype curl dom fileinfo filter hash mbstring openssl pcre pdo session tokenizer xml pdo_mysql gd zip"
 ]
 
-# Build : dépendances front, compilation des assets (public/build/), caches Laravel.
-# public/build/ est dans .gitignore : les assets DOIVENT être compilés ici.
+# Build : dépendances front + compilation des assets (public/build/).
+# NB : pas de `config:cache` ici — les variables d'env Railway (APP_URL, DB_*)
+# ne sont pas toujours disponibles au build, ce qui figerait une config fausse
+# (assets http:// → mixed content). Le cache config est géré au démarrage (Procfile).
 [phases.build]
 dependsOn = ["install", "extensions"]
 cmds = [
   "npm ci",
   "npm run build",
-  "php artisan config:cache",
-  "php artisan route:cache",
   "php artisan view:cache"
 ]
