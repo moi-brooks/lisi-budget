@@ -14,6 +14,7 @@ use App\Http\Controllers\Emetteur\LigneProposeeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Vite;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -31,11 +32,20 @@ Route::get('/debug-railway', function () {
         $dbOk = 'DB FAIL: ' . $e->getMessage();
     }
 
+    try {
+        $viteAsset = Vite::asset('resources/css/app.css');
+    } catch (\Throwable $e) {
+        $viteAsset = 'VITE FAIL: ' . $e->getMessage();
+    }
+
     return response()->json([
         'app_env' => env('APP_ENV'),
         'app_key_set' => !empty(env('APP_KEY')),
         'db_status' => $dbOk,
         'php_version' => PHP_VERSION,
+        'app_url' => config('app.url'),
+        'asset_url' => config('app.asset_url'),
+        'vite_asset' => $viteAsset,
     ]);
 });
 
