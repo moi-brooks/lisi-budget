@@ -4,7 +4,7 @@ use App\Http\Controllers\Admin\BudgetController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EmetteurController;
 use App\Http\Controllers\Admin\EngagementController as AdminEngagementController;
-use App\Http\Controllers\Admin\FournisseurController;
+// use App\Http\Controllers\Admin\FournisseurController; // CRUD fournisseurs désactivé (voir plus bas)
 use App\Http\Controllers\Admin\LigneBudgetaireController;
 use App\Http\Controllers\Admin\PropositionController;
 use App\Http\Controllers\Admin\AuditLogController;
@@ -41,7 +41,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('emetteurs', EmetteurController::class);
         Route::post('/emetteurs/{emetteur}/reset-password', [EmetteurController::class, 'resetPassword'])->name('emetteurs.reset-password');
 
-        Route::resource('fournisseurs', FournisseurController::class)->except(['show']);
+        // CRUD fournisseurs désactivé : l'émetteur saisit désormais le fournisseur
+        // en texte libre (Engagement::fournisseur_nom). Controller/vues conservés.
+        // Route::resource('fournisseurs', FournisseurController::class)->except(['show']);
 
         Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions.index');
         Route::get('/propositions/export/excel', [PropositionController::class, 'exportExcel'])->name('propositions.export.excel');
