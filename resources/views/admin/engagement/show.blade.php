@@ -45,7 +45,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-slate-100 pt-6">
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Fournisseur suggéré</label>
-                        <p class="font-bold text-slate-700">{{ $engagement->fournisseur?->nom ?? 'Non défini' }}</p>
+                        <p class="font-bold text-slate-700">{{ $engagement->fournisseur_nom ?? $engagement->fournisseur?->nom ?? 'Non défini' }}</p>
                     </div>
                     <div>
                         <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Ligne Budgétaire</label>

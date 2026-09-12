@@ -55,7 +55,7 @@
                                 <td class="p-4 text-slate-600">{{ $engagement->created_at->format('d/m/Y') }}</td>
                                 <td class="p-4">
                                     <div class="font-bold text-slate-700">{{ Str::limit($engagement->commentaire ?? 'Aucun commentaire', 40) }}</div>
-                                    <div class="text-xs text-slate-400 mt-0.5">{{ $engagement->fournisseur?->nom ?? 'Fournisseur non défini' }}</div>
+                                    <div class="text-xs text-slate-400 mt-0.5">{{ $engagement->fournisseur_nom ?? $engagement->fournisseur?->nom ?? 'Fournisseur non défini' }}</div>
                                 </td>
                                 <td class="p-4">
                                     <div class="font-mono text-xs text-slate-400 mb-1 border border-slate-200 inline-block px-1.5 py-0.5 rounded bg-slate-50">{{ $engagement->ligneProposee->ligne->code_complet }}</div>

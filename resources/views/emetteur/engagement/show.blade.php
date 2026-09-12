@@ -40,7 +40,7 @@
                     
                     <div class="mb-4">
                         <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold block mb-1">Fournisseur</span>
-                        <span class="font-medium text-slate-700 text-lg">{{ $engagement->fournisseur?->nom ?? 'Non défini' }}</span>
+                        <span class="font-medium text-slate-700 text-lg">{{ $engagement->fournisseur_nom ?? $engagement->fournisseur?->nom ?? 'Non défini' }}</span>
                     </div>
                     
                     <div>

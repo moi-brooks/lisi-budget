@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Emetteur;
 use App\Http\Controllers\Controller;
 use App\Models\Besoin;
 use App\Models\Engagement;
-use App\Models\Fournisseur;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use PhpOffice\PhpWord\PhpWord;
@@ -44,10 +43,8 @@ class EngagementController extends Controller
             ->where('statut', 'approuve')
             ->where('emetteur_id', $emetteur->id)
             ->get();
-            
-        $fournisseurs = Fournisseur::orderBy('nom')->get();
 
-        return view('emetteur.engagement.create', compact('lignesApprouvees', 'fournisseurs'));
+        return view('emetteur.engagement.create', compact('lignesApprouvees'));
     }
 
     public function store(Request $request)
@@ -60,7 +57,7 @@ class EngagementController extends Controller
 
         $validated = $request->validate([
             'ligne_proposee_id' => 'required|exists:ligne_budget_proposees,id',
-            'fournisseur_id' => 'nullable|exists:fournisseurs,id',
+            'fournisseur_nom' => 'nullable|string|max:255',
             'date' => 'required|date',
             'commentaire' => 'nullable|string',
             'tva' => 'required|numeric|min:0|max:100',
@@ -104,7 +101,7 @@ class EngagementController extends Controller
 
         $engagement = $emetteur->engagements()->create([
             'ligne_proposee_id' => $validated['ligne_proposee_id'],
-            'fournisseur_id' => $validated['fournisseur_id'],
+            'fournisseur_nom' => $validated['fournisseur_nom'] ?? null,
             'date' => $validated['date'],
             'commentaire' => $validated['commentaire'] ?? null,
             'tva' => $validated['tva'],

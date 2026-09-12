@@ -17,6 +17,7 @@ class Engagement extends Model
         'ligne_proposee_id',
         'emetteur_id',
         'fournisseur_id',
+        'fournisseur_nom',
         'date',
         'commentaire',
         'tva',

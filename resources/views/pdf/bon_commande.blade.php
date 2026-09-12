@@ -110,7 +110,7 @@
             </td>
             <td class="meta-cell v-top">
                 <span class="meta-label">Fournisseur Suggéré</span>
-                <span class="meta-value">{{ $engagement->fournisseur?->nom ?? 'Non défini' }}</span>
+                <span class="meta-value">{{ $engagement->fournisseur_nom ?? $engagement->fournisseur?->nom ?? 'Non défini' }}</span>
             </td>
             <td class="meta-cell v-top">
                 <span class="meta-label">Affectation Budgétaire</span>

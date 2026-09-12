@@ -62,7 +62,7 @@ class EngagementsExport
             'N° EB'             => str_pad($e->id, 5, '0', STR_PAD_LEFT),
             'Date'              => $e->date?->format('d/m/Y') ?? '—',
             'Émetteur'          => $e->emetteur?->user?->name ?? '—',
-            'Fournisseur'       => $e->fournisseur?->nom ?? '—',
+            'Fournisseur'       => $e->fournisseur_nom ?? $e->fournisseur?->nom ?? '—',
             'Budget (Saison)'   => $e->ligneProposee?->ligne?->budget?->saison ?? '—',
             'Ligne budgétaire'  => $e->ligneProposee?->ligne?->nom ?? '—',
             'Montant HT (DH)'   => number_format($e->total_ht, 2, '.', ''),

@@ -105,23 +105,11 @@
 
                     <div class="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="fournisseur_id" class="block text-gray-700 text-sm font-bold mb-2">Fournisseur :</label>
-                            @if($fournisseurs->isEmpty())
-                                <div class="bg-amber-50 border border-amber-300 text-amber-800 rounded-lg px-4 py-3 text-sm">
-                                    Aucun fournisseur disponible. Veuillez contacter l'administrateur.
-                                </div>
-                                <input type="hidden" name="fournisseur_id" value="">
-                            @else
-                                <select name="fournisseur_id" id="fournisseur_id"
-                                        class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                    <option value="">-- Non défini / En attente --</option>
-                                    @foreach($fournisseurs as $fournisseur)
-                                        <option value="{{ $fournisseur->id }}" {{ old('fournisseur_id') == $fournisseur->id ? 'selected' : '' }}>
-                                            {{ $fournisseur->nom }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            @endif
+                            <label for="fournisseur_nom" class="block text-gray-700 text-sm font-bold mb-2">Fournisseur :</label>
+                            <input type="text" name="fournisseur_nom" id="fournisseur_nom"
+                                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                   value="{{ old('fournisseur_nom') }}" placeholder="Nom du fournisseur (optionnel)">
+                            @error('fournisseur_nom') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label for="date" class="block text-gray-700 text-sm font-bold mb-2">Date de la commande :</label>
