@@ -26,6 +26,9 @@
                         <x-nav-link :href="route('admin.emetteurs.index')" :active="request()->routeIs('admin.emetteurs.*')">
                             {{ __('Émetteurs') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.fournisseurs.index')" :active="request()->routeIs('admin.fournisseurs.*')">
+                            {{ __('Fournisseurs') }}
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.propositions.index')" :active="request()->routeIs('admin.propositions.*')">
                             {{ __('Propositions') }}
                         </x-nav-link>
