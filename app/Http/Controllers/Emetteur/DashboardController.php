@@ -22,7 +22,7 @@ class DashboardController extends Controller
         $dotation = $emetteur->dotation;
         $montant_approuve = $emetteur->montant_approuve;
         $montant_attente = $emetteur->lignesProposees()->where('statut', 'en_attente')->sum('montant');
-        $reliquat = $emetteur->reliquat; // Handles attente + approuve
+        $reliquat = $emetteur->reliquat; // dotation - engagements APPROUVES uniquement (voir Emetteur::getReliquatAttribute)
 
         $stats = [
             'dotation' => $dotation,
